@@ -1,6 +1,6 @@
 /* Dependency: canvasengine.js */
 /* Dependency: novent-reader.js */
-
+"use strict";
 if(typeof NoventParser == "undefined") {
 	var NoventParser = {
 		read: function(noventXml) {
@@ -148,23 +148,23 @@ function validatePage(pageNode, errors) {
 	
 	var materials = pageNode.getElementsByTagName("materials")[0];
 	
-	for(l = 0; l < materials.getElementsByTagName("image").length; l++) {
+	for(var l = 0; l < materials.getElementsByTagName("image").length; l++) {
 		validateImageMaterials(materials.getElementsByTagName("image")[l], page.materials.images, errors);
 	}
 	
-	for(l = 0; l < materials.getElementsByTagName("sound").length; l++) {
+	for(var l = 0; l < materials.getElementsByTagName("sound").length; l++) {
 		validateSoundMaterials(materials.getElementsByTagName("sound")[l], page.materials.sounds, errors);
 	}
 	
-	for(l = 0; l < materials.getElementsByTagName("animation").length; l++) {
+	for(var l = 0; l < materials.getElementsByTagName("animation").length; l++) {
 		validateAnimationMaterials(materials.getElementsByTagName("animation")[l], page.materials.animations, errors);
 	}
 	
-	for(l = 0; l < materials.getElementsByTagName("text").length; l++) {
+	for(var l = 0; l < materials.getElementsByTagName("text").length; l++) {
 		validateTextMaterials(materials.getElementsByTagName("text")[l], page.materials.texts, errors);
 	}
 	
-	for(l = 0; l < materials.getElementsByTagName("font").length; l++) {
+	for(var l = 0; l < materials.getElementsByTagName("font").length; l++) {
 		validateFontMaterials(materials.getElementsByTagName("font")[l], page.materials.fonts, errors);
 	}
 	
