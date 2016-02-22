@@ -22,7 +22,7 @@ if(typeof NoventParser == "undefined") {
 				return errors;
 			}
 			
-			for(i = 0; i < pageNodes.length; i++) {
+			for(var i = 0, count = pageNodes.length; i < count; i++) {
 				var pageDescriptor = validatePage(pageNodes[i], errors);
 				if(errors.length != 0) return errors;
 				
@@ -32,7 +32,7 @@ if(typeof NoventParser == "undefined") {
 				
 				if(errors.length != 0) return errors;
 				
-				for(j = 0; j < events.length; j++) {
+				for(var j = 0, count = events.length; j < count; j++) {
 					page.Events.New(events[j]);
 				}
 			}
@@ -180,7 +180,7 @@ function validateEvents(pageNode, pageDescriptor, errors) {
 		return events;
 	}
 	
-	for(k= 0; k < eventNodes.length; k++) {
+	for(var k = 0, count = eventNodes.length; k < count; k++) {
 		var eventFunction = validateEvent(eventNodes[k], pageDescriptor, errors);
 		if(eventFunction != null)
 			events.push(eventFunction);
@@ -192,14 +192,14 @@ function validateEvents(pageNode, pageDescriptor, errors) {
 function validateEvent(eventNode, pageDescriptor, errors) {
 	var eventElements = eventNode.children;
 	var eventFunctions = new Array();
-	
-	for(m = 0; m < eventElements.length; m++) {
+
+	for(var m = 0, count = eventElements.length; m < count; m++) {
 		if(eventElements[m].nodeName == "animate") {
-			var animate = validateAnimateEvent(eventElements[m], pageDescriptor, errors);
-			var change = new Object();
+
+			let animate = validateAnimateEvent(eventElements[m], pageDescriptor, errors);
+			let change = new Object();
 			change[animate.property] = animate.value;
-			var subFunction = validateEvent(eventElements[m], pageDescriptor, errors);
-			
+			let subFunction = validateEvent(eventElements[m], pageDescriptor, errors);
 			if(subFunction != null) {
 				if(animate.targetType != "sounds") {
 					eventFunctions.push(function(canvas, readyObj, callback) {
@@ -230,9 +230,9 @@ function validateEvent(eventNode, pageDescriptor, errors) {
 			}
 		}
 		else if(eventElements[m].nodeName == "play") {
-			var play = validatePlayEvent(eventElements[m], pageDescriptor, errors);
+			let play = validatePlayEvent(eventElements[m], pageDescriptor, errors);
 			
-			var subFunction = validateEvent(eventElements[m], pageDescriptor, errors);
+			let subFunction = validateEvent(eventElements[m], pageDescriptor, errors);
 			
 			if(play.targetType == "animations") {
 				eventFunctions.push(function(canvas, readyObj, callback) {
@@ -255,9 +255,9 @@ function validateEvent(eventNode, pageDescriptor, errors) {
 			}
 		}
 		else if(eventElements[m].nodeName == "wait") {
-			var durationAttr = eventElements[m].attributes.duration;
+			let durationAttr = eventElements[m].attributes.duration;
 			if(durationAttr != undefined && !Number.isNaN(parseInt(durationAttr.value)) && parseInt(durationAttr.value) >= 0) {
-				var subFunction = validateEvent(eventElements[m], pageDescriptor, errors);
+				let subFunction = validateEvent(eventElements[m], pageDescriptor, errors);
 				
 				if(subFunction != null) {
 					eventFunctions.push(function(canvas, readyObj, callback) {
@@ -277,17 +277,16 @@ function validateEvent(eventNode, pageDescriptor, errors) {
 			}
 		}
 		else if(eventElements[m].nodeName == "wiggle") {
-			var wiggle = validateWiggleEvent(eventElements[m], pageDescriptor, errors);
-			console.log(wiggle);
+			let wiggle = validateWiggleEvent(eventElements[m], pageDescriptor, errors);
 			
 			eventFunctions.push(function(canvas, readyObj, callback) {
-				var wiggleObj = new readyObj.wiggle(wiggle.name, wiggle.targetType, wiggle.target, wiggle.property, wiggle.amplitude, wiggle.frequency, wiggle.ease);
+				let wiggleObj = new readyObj.wiggle(wiggle.name, wiggle.targetType, wiggle.target, wiggle.property, wiggle.amplitude, wiggle.frequency, wiggle.ease);
 				wiggleObj.start();
 			});
 		}
 		else if(eventElements[m].nodeName == "stop") {
 			if(eventElements[m].attributes.target != undefined) {
-				var target = eventElements[m].attributes.target.value;
+				let target = eventElements[m].attributes.target.value;
 			
 				eventFunctions.push(function(canvas, readyObj, callback) {
 					readyObj.materials.wiggles[target].stop();
