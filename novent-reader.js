@@ -68,6 +68,7 @@ if(typeof NoventEngine == "undefined") {
 			
 			var sceneImages = new Object();
 			var sceneSounds = new Object();
+			var sceneVideos = new Object();
 			
 			if(pageObj.materials.images != undefined) {
 				Object.keys(pageObj.materials.images).forEach(function(e) {
@@ -87,12 +88,19 @@ if(typeof NoventEngine == "undefined") {
 				});
 			}
 			
+			if(pageObj.materials.videos != undefined) {
+				Object.keys(pageObj.materials.videos).forEach(function(e) {
+					sceneVideos[e] = pageObj.materials.videos[e].src;
+				});
+			}
+						
 			page.scene = page.novent.canvas.Scene.New({
 				name: page.name,
 				materials: {
 					images: sceneImages,
 					sounds: sceneSounds,
-					fonts: pageObj.materials.fonts
+					fonts: pageObj.materials.fonts,
+					videos: sceneVideos
 				},
 				ready: function(stage, params) {
 					
@@ -107,6 +115,7 @@ if(typeof NoventEngine == "undefined") {
 					readyObj.materials = new Object();
 					readyObj.materials.images = new Object();
 					readyObj.materials.animations = new Object();
+					readyObj.materials.videos = new Object();
 					readyObj.materials.texts = new Object();
 					readyObj.materials.wiggles = new Object();
 					
@@ -127,6 +136,13 @@ if(typeof NoventEngine == "undefined") {
 					if(pageObj.materials.animations != undefined) {
 						Object.keys(pageObj.materials.animations).forEach(function(e) {
 							readyObj.materials.animations[e] = new NoventEngine.Animation(page.novent.canvas, readyObj, e, pageObj.materials.animations[e]);
+						});
+					}
+					
+					//and videos
+					if(pageObj.materials.videos != undefined) {
+						Object.keys(pageObj.materials.videos).forEach(function(e) {
+							readyObj.materials.videos[e] = new NoventEngine.Video(page.novent.canvas, readyObj, e, pageObj.materials.videos[e]);
 						});
 					}
 					
@@ -360,6 +376,40 @@ if(typeof NoventEngine == "undefined") {
 			
 				self.animation.add(self.element);
 				self.animation.play("animation", type);
+			}
+			
+			return self.element;
+		},
+		
+		Video: function(canvas, readyObj, name, videoObj) {
+			var self = this;
+			
+			self.element = readyObj.createElement(videoObj.width, videoObj.height);
+			self.element.x = videoObj.x;
+			self.element.y = videoObj.y;
+			self.element.opacity = videoObj.opacity;
+			self.element.drawImage(name);
+			readyObj.stage.append(self.element);
+
+			self.element.play = function(type, callback) {
+				var video = canvas.Materials.get(name, "video");
+				
+				video.addEventListener('ended', function () {
+					if(type == "loop") {
+						this.currentTime = 0;
+						this.play();
+					}
+					else if(type == "remove") {
+						self.element.remove();
+						if(callback != undefined && callback != null)
+							callback();
+					}
+					else if(type == "stop") {
+						if(callback != undefined && callback != null)
+							callback();
+					}
+				}, false);
+				video.play();
 			}
 			
 			return self.element;

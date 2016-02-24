@@ -17,12 +17,13 @@ if(typeof NoventParser == "undefined") {
 			var novent = new NoventEngine.Novent("canvas_id", button);
 			
 			var pageNodes = noventNode.getElementsByTagName("page");
+			console.log(pageNodes);
 			if(pageNodes.length == 0) {
 				errors.push(new NoventXmlStructureException("No page tags, Novent must have at least one page tag."));
 				return errors;
 			}
 			
-			for(var i = 0, count = pageNodes.length; i < count; i++) {
+			for(var i = 0, counti = pageNodes.length; i < counti; i++) {
 				var pageDescriptor = validatePage(pageNodes[i], errors);
 				if(errors.length != 0) return errors;
 				
@@ -32,7 +33,7 @@ if(typeof NoventParser == "undefined") {
 				
 				if(errors.length != 0) return errors;
 				
-				for(var j = 0, count = events.length; j < count; j++) {
+				for(var j = 0, countj = events.length; j < countj; j++) {
 					page.Events.New(events[j]);
 				}
 			}
@@ -127,6 +128,7 @@ function validatePage(pageNode, errors) {
 	page.materials.sounds = new Object();
 	page.materials.fonts = new Object();
 	page.materials.animations = new Object();
+	page.materials.videos = new Object();
 	page.materials.texts = new Object();
 	
 	if(pageNode.attributes.name == undefined || pageNode.attributes.name.value == "") {
@@ -168,6 +170,10 @@ function validatePage(pageNode, errors) {
 		validateFontMaterials(materials.getElementsByTagName("font")[l], page.materials.fonts, errors);
 	}
 	
+	for(var l = 0; l < materials.getElementsByTagName("video").length; l++) {
+		validateVideoMaterials(materials.getElementsByTagName("video")[l], page.materials.videos, errors);
+	}
+	
 	return page;
 }
 
@@ -180,7 +186,7 @@ function validateEvents(pageNode, pageDescriptor, errors) {
 		return events;
 	}
 	
-	for(var k = 0, count = eventNodes.length; k < count; k++) {
+	for(var k = 0, countk = eventNodes.length; k < countk; k++) {
 		var eventFunction = validateEvent(eventNodes[k], pageDescriptor, errors);
 		if(eventFunction != null)
 			events.push(eventFunction);
@@ -193,7 +199,7 @@ function validateEvent(eventNode, pageDescriptor, errors) {
 	var eventElements = eventNode.children;
 	var eventFunctions = new Array();
 
-	for(var m = 0, count = eventElements.length; m < count; m++) {
+	for(var m = 0, countm = eventElements.length; m < countm; m++) {
 		if(eventElements[m].nodeName == "animate") {
 
 			let animate = validateAnimateEvent(eventElements[m], pageDescriptor, errors);
@@ -234,12 +240,19 @@ function validateEvent(eventNode, pageDescriptor, errors) {
 			
 			let subFunction = validateEvent(eventElements[m], pageDescriptor, errors);
 			
-			if(play.targetType == "animations") {
-				eventFunctions.push(function(canvas, readyObj, callback) {
-					readyObj.materials[play.targetType][play.target].play(play.loop, function() {
-						subFunction(canvas, readyObj, callback);
+			if(play.targetType == "animations" || play.targetType == "videos") {
+				if(subFunction != null) {
+					eventFunctions.push(function(canvas, readyObj, callback) {
+						readyObj.materials[play.targetType][play.target].play(play.loop, function() {
+							subFunction(canvas, readyObj, callback);
+						});
 					});
-				});
+				}
+				else {
+					eventFunctions.push(function(canvas, readyObj, callback) {
+						readyObj.materials[play.targetType][play.target].play(play.loop);
+					});
+				}
 			}
 			else if(play.targetType == "sounds") {
 				if(play.loop == "loop") {
@@ -327,7 +340,7 @@ function validatePlayEvent(playNode, pageDescriptor, errors) {
 			errors.push(new NoventXmlStructureException("Error in target structure for play tag, please respect \"targetType:targetName\"."));
 		}
 		else {
-			if(targetArgs[0] == "sound" || targetArgs[0] == "animation") {
+			if(targetArgs[0] == "sound" || targetArgs[0] == "animation" || targetArgs[0] == "video") {
 				play.targetType = targetArgs[0] + "s";
 				
 				if(pageDescriptor.materials[play.targetType][targetArgs[1]] == undefined) {
@@ -364,7 +377,7 @@ function validateAnimateEvent(animateNode, pageDescriptor, errors) {
 			errors.push(new NoventXmlStructureException("Error in target structure for animate tag, please respect \"targetType:targetName\"."));
 		}
 		else {
-			if(targetArgs[0] == "image" || targetArgs[0] == "sound" || targetArgs[0] == "animation" || targetArgs[0] == "text") {
+			if(targetArgs[0] == "image" || targetArgs[0] == "sound" || targetArgs[0] == "animation" || targetArgs[0] == "text" || targetArgs[0] == "video") {
 				animate.targetType = targetArgs[0] + "s";
 				
 				if(pageDescriptor.materials[animate.targetType][targetArgs[1]] == undefined) {
@@ -683,4 +696,57 @@ function validateFontMaterials(fontNode, fontsObj, errors) {
 	
 	if(name != undefined && src != undefined)
 		fontsObj[name] = src;
+}
+
+function validateVideoMaterials(videoNode, videosObj, errors) {
+	var video = new Object();
+	var name;
+	
+	if(videoNode.attributes.name == undefined || videoNode.attributes.name.value == "") { 
+		errors.push(new NoventXmlStructureException("Missing attribute \"name\" in video tag."));
+	} else {
+		name = videoNode.attributes.name.value;
+	}
+	
+	if(videoNode.attributes.src == undefined || videoNode.attributes.src.value == "") { 
+		errors.push(new NoventXmlStructureException("Missing attribute \"src\" in video tag (" + name + ")."));
+	} else {
+		video.src = videoNode.attributes.src.value;
+	}
+	
+	if(videoNode.attributes.x == undefined || Number.isNaN(parseInt(videoNode.attributes.x.value))) {
+		errors.push(new NoventXmlStructureException("Missing or Invalid attribute \"x\" in video tag (Must be an Integer)."));
+	} else {
+		video.x = parseInt(videoNode.attributes.x.value);
+	}
+	
+	if(videoNode.attributes.y == undefined || Number.isNaN(parseInt(videoNode.attributes.y.value))) { 
+		errors.push(new NoventXmlStructureException("Missing or Invalid attribute \"y\" in video tag (Must be an Integer)."));
+	}
+	else {
+		video.y = parseInt(videoNode.attributes.y.value);
+	}
+	
+	if(videoNode.attributes.width == undefined || Number.isNaN(parseInt(videoNode.attributes.width.value)) || parseInt(videoNode.attributes.width.value) <= 0) {
+		errors.push(new NoventXmlStructureException("Missing or Invalid attribute \"width\" in video tag (Must be an positive Integer)."));
+	} else {
+		video.width = parseInt(videoNode.attributes.width.value);
+	}
+	
+	if(videoNode.attributes.height == undefined || Number.isNaN(parseInt(videoNode.attributes.height.value)) || parseInt(videoNode.attributes.height.value) <= 0) {
+		errors.push(new NoventXmlStructureException("Missing or Invalid attribute \"height\" in video tag (Must be an positive Integer)."));
+	} else {
+		video.height = parseInt(videoNode.attributes.height.value);
+	}
+	
+	if(videoNode.attributes.opacity == undefined || Number.isNaN(parseInt(videoNode.attributes.opacity.value)) || parseInt(videoNode.attributes.opacity.value) < 0) {
+		errors.push(new NoventXmlStructureException("Missing or Invalid attribute \"opacity\" in video tag (Must be an positive Integer)."));
+	} else {
+		video.opacity = parseInt(videoNode.attributes.opacity.value);
+	}
+	
+	if(name != undefined)
+		videosObj[name] = video;
+	
+	return video;
 }
