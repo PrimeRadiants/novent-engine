@@ -523,6 +523,8 @@ function validateImageMaterials(imageNode, imagesObj, errors) {
 		image.opacity = parseInt(imageNode.attributes.opacity.value);
 	}
 	
+	image.index = getNodeIndex(imageNode);
+	
 	if(name != undefined)
 		imagesObj[name] = image;
 	
@@ -550,6 +552,8 @@ function validateSoundMaterials(soundNode, soundsObj, errors) {
 	} else {
 		sound.volume = parseFloat(soundNode.attributes.volume.value);
 	}
+	
+	sound.index = getNodeIndex(soundNode);
 	
 	if(name != undefined)
 		soundsObj[name] = sound;
@@ -609,6 +613,8 @@ function validateAnimationMaterials(animationNode, animationsObj, errors) {
 	} else {
 		animation.frequency = parseInt(animationNode.attributes.frequency.value);
 	}
+	
+	animation.index = getNodeIndex(animationNode);
 	
 	if(name != undefined)
 		animationsObj[name] = animation;
@@ -671,6 +677,8 @@ function validateTextMaterials(textNode, textsObj, errors) {
 		text.align = textNode.attributes.align.value;
 	
 	text.text = textNode.textContent;
+	
+	text.index = getNodeIndex(textNode);
 	
 	if(name != undefined)
 		textsObj[name] = text;
@@ -745,8 +753,21 @@ function validateVideoMaterials(videoNode, videosObj, errors) {
 		video.opacity = parseInt(videoNode.attributes.opacity.value);
 	}
 	
+	video.index = getNodeIndex(videoNode);
+	
 	if(name != undefined)
 		videosObj[name] = video;
 	
 	return video;
+}
+
+function getNodeIndex(node) {
+	var i = 0;
+	var child = node;
+	while( (child = child.previousElementSibling) != null ) 
+		i++;
+	
+	console.log(i);
+	console.log(node);
+	return i;
 }

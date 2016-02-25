@@ -129,6 +129,7 @@ if(typeof NoventEngine == "undefined") {
 							readyObj.materials.images[e].drawImage(e);
 							
 							readyObj.stage.append(readyObj.materials.images[e]);
+							readyObj.materials.images[e].zIndex(pageObj.materials.images[e].index);
 						});
 					}
 					
@@ -161,6 +162,7 @@ if(typeof NoventEngine == "undefined") {
 							wrapText(_canvas, readyObj, readyObj.materials.texts[e], pageObj.materials.texts[e])
 							
 							stage.append(readyObj.materials.texts[e]);
+							readyObj.materials.texts[e].zIndex(pageObj.materials.texts[e].index);
 						});
 					}
 					
@@ -356,7 +358,9 @@ if(typeof NoventEngine == "undefined") {
 			self.element = readyObj.createElement();
 			self.element.x = animationObj.x;
 			self.element.y = animationObj.y;
-			readyObj.stage.append(self.element);			
+			
+			readyObj.stage.append(self.element);
+			self.element.zIndex(animationObj.index);			
 			
 			self.element.play = function(type, callback) {
 				self.animation = canvas.Animation.new({
@@ -390,6 +394,7 @@ if(typeof NoventEngine == "undefined") {
 			self.element.opacity = videoObj.opacity;
 			self.element.drawImage(name);
 			readyObj.stage.append(self.element);
+			self.element.zIndex(videoObj.index);
 
 			self.element.play = function(type, callback) {
 				var video = canvas.Materials.get(name, "video");
