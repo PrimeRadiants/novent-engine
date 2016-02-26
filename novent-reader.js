@@ -395,9 +395,10 @@ if(typeof NoventEngine == "undefined") {
 			self.element.drawImage(name);
 			readyObj.stage.append(self.element);
 			self.element.zIndex(videoObj.index);
-
+			var video = canvas.Materials.get(name, "video");
+			video.autobuffer = "autobuffer";
+			
 			self.element.play = function(type, callback) {
-				var video = canvas.Materials.get(name, "video");
 				
 				video.addEventListener('ended', function () {
 					if(type == "loop") {
