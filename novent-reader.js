@@ -71,29 +71,29 @@ if(typeof NoventEngine == "undefined") {
 			var sceneVideos = new Object();
 			
 			if(pageObj.materials.images != undefined) {
-				Object.keys(pageObj.materials.images).forEach(function(e) {
-					sceneImages[e] = pageObj.materials.images[e].src;
+				pageObj.materials.images.forEach(function(e) {
+					sceneImages[e.name] = e.src;
 				});
 			}
 			
 			if(pageObj.materials.sounds != undefined) {
-				Object.keys(pageObj.materials.sounds).forEach(function(e) {
-					sceneSounds[e] = pageObj.materials.sounds[e].src;
+				pageObj.materials.sounds.forEach(function(e) {
+					sceneSounds[e.name] = e.src;
 				});
 			}
 			
 			if(pageObj.materials.animations != undefined) {
-				Object.keys(pageObj.materials.animations).forEach(function(e) {
-					sceneImages[e] = pageObj.materials.animations[e].src;
+				pageObj.materials.animations.forEach(function(e) {
+					sceneImages[e.name] = e.src;
 				});
 			}
 			
 			if(pageObj.materials.videos != undefined) {
-				Object.keys(pageObj.materials.videos).forEach(function(e) {
-					sceneVideos[e] = pageObj.materials.videos[e].src;
+				pageObj.materials.videos.forEach(function(e) {
+					sceneVideos[e.name] = e.src;
 				});
 			}
-						
+			
 			page.scene = page.novent.canvas.Scene.New({
 				name: page.name,
 				materials: {
@@ -121,55 +121,55 @@ if(typeof NoventEngine == "undefined") {
 					
 					//Adding all the predifined images to the scene
 					if(pageObj.materials.images != undefined) {
-						Object.keys(pageObj.materials.images).forEach(function(e) {
-							readyObj.materials.images[e] = readyObj.createElement(pageObj.materials.images[e].width, pageObj.materials.images[e].height);
-							readyObj.materials.images[e].x = pageObj.materials.images[e].x;
-							readyObj.materials.images[e].y = pageObj.materials.images[e].y;
-							readyObj.materials.images[e].opacity = pageObj.materials.images[e].opacity;
-							readyObj.materials.images[e].drawImage(e);
+						pageObj.materials.images.forEach(function(e) {
+							readyObj.materials.images[e.name] = readyObj.createElement(e.width, e.height);
+							readyObj.materials.images[e.name].x = e.x;
+							readyObj.materials.images[e.name].y = e.y;
+							readyObj.materials.images[e.name].opacity = e.opacity;
+							readyObj.materials.images[e.name].drawImage(e.name);
 							
-							readyObj.stage.append(readyObj.materials.images[e]);
-							readyObj.materials.images[e].zIndex(pageObj.materials.images[e].index);
+							readyObj.stage.append(readyObj.materials.images[e.name]);
+							readyObj.materials.images[e.name].zIndex(e.index);
 						});
 					}
 					
 					//Same for animations
 					if(pageObj.materials.animations != undefined) {
-						Object.keys(pageObj.materials.animations).forEach(function(e) {
-							readyObj.materials.animations[e] = new NoventEngine.Animation(page.novent.canvas, readyObj, e, pageObj.materials.animations[e]);
+						pageObj.materials.animations.forEach(function(e) {
+							readyObj.materials.animations[e.name] = new NoventEngine.Animation(page.novent.canvas, readyObj, e.name, e);
 						});
 					}
 					
 					//and videos
 					if(pageObj.materials.videos != undefined) {
-						Object.keys(pageObj.materials.videos).forEach(function(e) {
-							readyObj.materials.videos[e] = new NoventEngine.Video(page.novent.canvas, readyObj, e, pageObj.materials.videos[e]);
+						pageObj.materials.videos.forEach(function(e) {
+							readyObj.materials.videos[e.name] = new NoventEngine.Video(page.novent.canvas, readyObj, e.name, e);
 						});
 					}
 					
 					//And text elements
 					if(pageObj.materials.texts != undefined) {
-						Object.keys(pageObj.materials.texts).forEach(function(e) {							
-							readyObj.materials.texts[e] = readyObj.createElement();
-							readyObj.materials.texts[e].x = pageObj.materials.texts[e].x;
-							readyObj.materials.texts[e].y = pageObj.materials.texts[e].y;
-							readyObj.materials.texts[e].opacity = pageObj.materials.texts[e].opacity;
+						pageObj.materials.texts.forEach(function(e) {							
+							readyObj.materials.texts[e.name] = readyObj.createElement();
+							readyObj.materials.texts[e.name].x = e.x;
+							readyObj.materials.texts[e.name].y = e.y;
+							readyObj.materials.texts[e.name].opacity = e.opacity;
 							
 							var textElementModel = readyObj.createElement();
-							textElementModel.font = pageObj.materials.texts[e].size + " " + pageObj.materials.texts[e].font;
-							textElementModel.fillStyle = pageObj.materials.texts[e].color;
+							textElementModel.font = e.size + " " + e.font;
+							textElementModel.fillStyle = e.color;
 							
-							wrapText(_canvas, readyObj, readyObj.materials.texts[e], pageObj.materials.texts[e])
+							wrapText(_canvas, readyObj, readyObj.materials.texts[e.name], e)
 							
-							stage.append(readyObj.materials.texts[e]);
-							readyObj.materials.texts[e].zIndex(pageObj.materials.texts[e].index);
+							stage.append(readyObj.materials.texts[e.name]);
+							readyObj.materials.texts[e.name].zIndex(e.index);
 						});
 					}
 					
 					//Setting all sounds volume
 					if(pageObj.materials.sounds != undefined) {
-						Object.keys(pageObj.materials.sounds).forEach(function(e) {
-							page.novent.canvas.Sound.fadeTo(e, 1, pageObj.materials.sounds[e].volume);
+						pageObj.materials.sounds.forEach(function(e) {
+							page.novent.canvas.Sound.fadeTo(e.name, 1, e.volume);
 						});
 					}
 					
