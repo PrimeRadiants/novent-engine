@@ -22,37 +22,80 @@ if(typeof NoventEngine == "undefined") {
 		novent.width = novent.canvas.width = width;
 		novent.height = novent.canvas.height = height;
 		novent.button = new NoventEngine.Button(novent, buttonDescriptor);
+		novent.buttonVisible = false;
+		
+		novent.showButton = function() {
+			createjs.Tween.get(novent.button.graphics).to({alpha: 1}, 2000).call(function() {
+				novent.buttonVisible = true;
+			});
+		}
+		
+		novent.hideButton = function() {
+			createjs.Tween.get(novent.button.graphics).to({alpha: 0}, 2000).call(function() {
+				novent.buttonVisible = false;
+			});;
+		}
 		
 		//Creating stage : root level container for the novent:
 		novent.stage = new createjs.Stage(novent.canvas);
-		novent.loadQueue = new createjs.LoadQueue(true);
+		var loadQueue = new createjs.LoadQueue(true);
 		
-		novent.button.addToLoadQueue();
+		novent.button.addToLoadQueue(loadQueue);		
+		loadQueue.load();
 		
-		p = new NoventEngine.Page(novent, {name:"test"});
-		v = new NoventEngine.Video(p, {src: "videos/AB.mp4"});
-		p.materials.videos.set(v.id, v);
-		p.addToLoadQueue();
-		
-		novent.loadQueue.load();
-		
-		novent.loadQueue.on("complete", function() {
+		loadQueue.on("complete", function() {
 			novent.button.appendToNovent();
-			p.appendToNovent();
-			v.play("loop");
-			console.log(v.element);
-			
-			console.log(v.graphics.isVisible.toString());
-			createjs.Tween.get(novent.button.graphics).wait(1000).to({alpha: 1}, 2000);
+
+			novent.button.graphics.addEventListener("click", function() {
+				if(novent.pages[novent.index - 1].waiting && novent.buttonVisible) {
+					novent.pages[novent.index - 1].readEvent();
+					novent.hideButton();
+				}
+			});
 		});
+		
+		novent.index = 0;
+		novent.pages = new Array();
+		novent.addPage = function(pageDescriptor) {
+			novent.pages.push(new NoventEngine.Page(novent, pageDescriptor));
+			return novent.pages[novent.pages.length - 1];
+		}
+		
+		novent.nextPage = function() {
+			if(novent.index != novent.pages.length - 1)
+				return novent.pages[novent.index + 1];
+		}
+		
+		novent.previousPage = function() {
+			if(novent.index != 0)
+				return novent.pages[novent.index - 1];
+		}
+		
+		novent.read = function(index) {
+			if(index != undefined && index < novent.pages.length)
+				novent.index = index;
+			
+			
+			var queue = new createjs.LoadQueue();
+			novent.pages[novent.index].addToLoadQueue(queue);
+			
+			queue.on("complete", function() {
+				console.log("complete")
+				novent.readPage();
+			});
+			
+			queue.load();
+		}
+		
+		novent.readPage = function() {
+			if(novent.index != novent.pages.length) {
+				novent.pages[novent.index].read();
+				novent.index++;
+			}
+		}
 		
 		createjs.Ticker.setFPS(30);
 		createjs.Ticker.addEventListener("tick", novent.stage);
-		
-		createjs.Ticker.addEventListener("tick",function() {
-			console.log(v.graphics.image.readyState);
-			v.graphics.image.readyState = 4;
-		});
 		
 		return novent;
 	}
@@ -67,12 +110,12 @@ if(typeof NoventEngine == "undefined") {
 		
 		//button.animation = (typeof _animation === 'undefined') ? false : _animation;
 		
-		button.addToLoadQueue = function() {
+		button.addToLoadQueue = function(queue) {
 			//Adding src to novent global load queue
-			button.novent.loadQueue.loadFile({id:button.id, src: button.src});
+			queue.loadFile({id:button.id, src: button.src});
 			
 			//When this file has finished loading : retreiving DOM element and creating graphic element
-			button.novent.loadQueue.on("fileload", function(event) {
+			queue.on("fileload", function(event) {
 				if(event.item.id == button.id) {
 					button.element = event.result;
 					button.graphics = new createjs.Bitmap(event.result);
@@ -110,32 +153,25 @@ if(typeof NoventEngine == "undefined") {
 		
 		page.container = new createjs.Container();
 		
-		page.materials = new Object();
-		page.materials.images = new Map();
-		page.materials.videos = new Map();
-		page.materials.animations = new Map();
-		page.materials.texts = new Map();
-		page.materials.sounds = new Map();
+		page.materials = new Map();
 		
-		page.materials.get = function(target) {
-			return createjs.Tween.get(target.graphics)
+		page.get = function(targetName) {
+			console.log(targetName);
+			console.log(page.materials.get(targetName));
+			console.log(page.materials.get(targetName).graphics);
+			return createjs.Tween.get(page.materials.get(targetName).graphics)
 		}
 		
-		page.addToLoadQueue = function() {
-			for(var image of page.materials.images.values())
-				image.addToLoadQueue();
-			
-			for(var video of page.materials.videos.values())
-				video.addToLoadQueue();
-			
-			for(var animation of page.materials.animations.values())
-				animation.addToLoadQueue();
-			
-			for(var text of page.materials.texts.values())
-				text.addToLoadQueue();
-			
-			for(var image of page.materials.sounds.values())
-				sound.addToLoadQueue();
+		pageDescriptor.materials.images.forEach(function(e) {
+			page.materials.set(e.name, new NoventEngine.Image(page, e))
+		});
+		
+		page.addToLoadQueue = function(queue) {
+			console.log("page:addToLoadQueue")
+			for(var m of page.materials.values()) {
+				console.log("load")
+				m.addToLoadQueue(queue);
+			}
 		}
 		
 		page.appendToNovent = function() {
@@ -146,11 +182,64 @@ if(typeof NoventEngine == "undefined") {
 			page.novent.stage.removeChild(page.container);
 		}
 		
+		page.waiting = false;
+		page.index = 0;
+		page.events = new Array();
+		page.addEvent = function(funct) {
+			page.events.push(new NoventEngine.Event(page, funct));
+			return page.events[page.events.length - 1];
+		}
+		
+		page.nextEvent = function() {
+			if(page.index != page.events.length - 1) {
+				return page.events[page.index + 1];
+			}
+		}
+		
+		page.previousEvent = function() {
+			if(page.index != 0) {
+				return page.events[page.index - 1];
+			}
+		}
+		
+		page.read = function() {
+			var queue = new createjs.LoadQueue();
+			var nextPage = page.novent.nextPage();
+			if(nextPage) {
+				nextPage.addToLoadQueue(queue);
+				queue.load();
+			}
+			
+			page.appendToNovent();
+			page.readEvent();
+		}
+		
+		page.readEvent = function() {
+			if(page.index != page.events.length) {
+				page.events[page.index].read();
+				page.index++;
+			}
+			else {
+				page.novent.readPage();
+			}
+		}
+		
 		return page;
 	}
 	
-	NoventEngine.Event = function() {
+	NoventEngine.Event = function(page, funct) {
 		var event = this;
+		
+		event.page = page;
+		event.funct = funct;
+		
+		event.read = function() {
+			event.funct(page, function() {
+				event.page.waiting = true;
+				event.page.novent.showButton();
+			});
+		}
+		
 		return event;
 	}
 	
@@ -162,12 +251,14 @@ if(typeof NoventEngine == "undefined") {
 		image.id = page.name + ":" + image.name;
 		image.src = imageDescriptor.src;
 		
-		image.addToLoadQueue = function() {
+		image.addToLoadQueue = function(queue) {
+			console.log("image.load")
 			//Adding src to novent global load queue
-			image.novent.loadQueue.loadFile({id:image.id, src: image.src});
+			queue.loadFile({id:image.id, src: image.src});
 			
 			//When this file has finished loading : retreiving DOM element and creating graphic element
-			image.novent.loadQueue.on("fileload", function(event) {
+			queue.on("fileload", function(event) {
+				console.log("fileload");
 				if(event.item.id == image.id) {
 					image.element = event.result;
 					image.graphics = new createjs.Bitmap(event.result);
@@ -195,12 +286,12 @@ if(typeof NoventEngine == "undefined") {
 		video.id = page.name + ":" + video.name;
 		video.src = videoDescriptor.src;
 		
-		video.addToLoadQueue = function() {
+		video.addToLoadQueue = function(queue) {
 			//Adding src to novent global load queue
-			video.page.novent.loadQueue.loadFile({id:video.id, src: video.src});
+			queue.loadFile({id:video.id, src: video.src});
 			
 			//When this file has finished loading : retreiving DOM element and creating graphic element
-			video.page.novent.loadQueue.on("fileload", function(event) {
+			queue.loadQueue.on("fileload", function(event) {
 				if(event.item.id == video.id) {
 					video.element = event.result;
 					video.graphics = new createjs.Bitmap(event.result);
@@ -215,31 +306,6 @@ if(typeof NoventEngine == "undefined") {
 				}
 			});
 		}
-		
-		//video.play = function(type, callback) {
-			//console.log(type === "loop");
-			//if(video.element != undefined) {
-				//if(type === "loop") {
-					//video.element.loop = true;
-				/*}
-				else if(type === "remove") {
-					video.element.addEventListener('ended', function () {
-						video.page.container.removeChild(video.graphics);
-						if(callback != undefined)
-							callback();
-					});
-				}
-				else if(type === "stop") {
-					if(callback != undefined) {
-						video.element.addEventListener('ended', function () {
-							callback();
-						});
-					}
-				}*/
-				
-				//video.element.play();
-			//}
-		//}
 		
 		video.play = function(type, callback) {
 			video.element.addEventListener('ended', function () {
