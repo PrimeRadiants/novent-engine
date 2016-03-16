@@ -21,6 +21,12 @@ if(typeof NoventEngine == "undefined") {
 		novent.canvas = document.getElementById(canvasId);
 		novent.width = novent.canvas.width = width;
 		novent.height = novent.canvas.height = height;
+		
+		window.onresize = function() {
+			resize(novent.canvas);
+		}
+		resize(novent.canvas);
+		
 		novent.button = new NoventEngine.Button(novent, buttonDescriptor);
 		novent.buttonVisible = false;
 		
@@ -355,5 +361,29 @@ if(typeof NoventEngine == "undefined") {
 	NoventEngine.NoventDefinitionError = function(message) {
 		this.name = "NoventDefinitionError";
 		this.message = message;
+	}
+	
+	function resize(canvasElement) {
+		canvasElement.style.position = "fixed";
+		canvasElement.style.top = 0;
+		canvasElement.style.left = 0;
+		canvasElement.style.bottom = 0;
+		canvasElement.style.right = 0;
+		canvasElement.style.margin = "auto";
+		
+		var width = window.innerWidth;
+        var height = window.innerHeight;
+		
+		var screenRatio = height/width;
+		var canvasRatio = canvasElement.height/canvasElement.width;
+		
+		if(screenRatio <= canvasRatio) {
+			width = height / canvasRatio;
+		} else {
+			height = width * canvasRatio;
+		}
+		
+		canvasElement.style.width = width + "px";
+		canvasElement.style.height = height + "px";
 	}
 }
