@@ -235,8 +235,13 @@ if(typeof NoventEngine == "undefined") {
 		
 		event.read = function() {
 			event.funct(page, function() {
-				event.page.waiting = true;
-				event.page.novent.showButton();
+				if(page.index != page.events.length) {
+					event.page.waiting = true;
+					event.page.novent.showButton();
+				}
+				else {
+					event.page.novent.readPage();
+				}
 			});
 		}
 		
