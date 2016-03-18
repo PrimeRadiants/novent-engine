@@ -345,6 +345,63 @@ if(typeof NoventEngine == "undefined") {
 	
 	NoventEngine.Animation = function(page, animationDescriptor) {
 		var animation = this;
+		
+		animation.page = page;
+		animation.name = animationDescriptor.name;
+		animation.id = page.name + ":" + video.name;
+		animation.src = animationDescriptor.src;
+		animation.height = animationDescriptor.height;
+		animation.width = animationDescriptor.width;
+		animation.framerate = animationDescriptor.framerate;
+		animation.frames = animationDescriptor.frames;
+		
+		animation.addToLoadQueue = function(queue) {
+			//Adding src to novent global load queue
+			queue.loadFile({id:animation.id, src: animation.src});
+			
+			queue.loadQueue.on("fileload", function(event) {
+				if(event.item.id == animation.id) {
+					animation.element = event.result;
+					animation.spriteSheet = new createjs.SpriteSheet({
+						framerate: animation.framerate,
+						images: [animation.element],
+						frames: {width: animation.width, height: animation.height},
+						animations: {
+							animation: [0, animation.frames]
+						}
+					});
+					
+					animation.graphics = new createjs.Sprite(animation.spriteSheet);
+					
+					//Setting the properties of the graphical object (x, y, ...)
+					for(key in animationDescriptor) {
+						if(key != undefined)
+							animation.graphics[key] = animationDescriptor[key];
+					}
+					
+					animation.page.container.addChild(animation.graphics);
+				}
+			});
+		}
+		
+		animation.play = function(type, callback) {
+			animation.graphics.addEventListener('animationend', function () {
+				if(type == "loop") {
+					animation.graphics.goToAndPlay("animation");
+				}
+				else if(type == "remove") {
+					animation.page.container.removeChild(animation.graphics);
+					if(callback != undefined)
+						callback();
+				}
+				else if(type == "stop") {
+					if(callback != undefined)
+						callback();
+				}
+			});
+			animation.graphics.goToAndPlay("animation");
+		}
+		
 		return animation;
 	}
 	
