@@ -349,7 +349,7 @@ if(typeof NoventEngine == "undefined") {
 		
 		animation.page = page;
 		animation.name = animationDescriptor.name;
-		animation.id = page.name + ":" + video.name;
+		animation.id = page.name + ":" + animation.name;
 		animation.src = animationDescriptor.src;
 		animation.height = animationDescriptor.height;
 		animation.width = animationDescriptor.width;
@@ -408,6 +408,41 @@ if(typeof NoventEngine == "undefined") {
 	
 	NoventEngine.Text = function(page, textDescriptor) {
 		var text = this;
+		
+		text.page = page;
+		text.name = textDescriptor.name;
+		text.id = page.name + ":" + text.name;
+		text.content = textDescriptor.content;
+		text.align = textDescriptor.align;
+		text.font = textDescriptor.size + " " + textDescriptor.font;
+		text.lineHeight = textDescriptor.lineHeight;
+		text.width = textDescriptor.width;
+		text.color = textDescriptor.color;
+		
+		text.addToLoadQueue = function(queue) {
+			text.graphics = new createjs.Container();
+			
+			if(text.align != "justify") {
+				var textGraphic = new createjs.Text(text.content, text.font, text.color);
+				textGraphic.lineHeight = text.lineHeight;
+				textGraphic.lineWidth = text.width;
+				textGraphic.textAlign = text.align;
+				
+				text.graphics.addChild(textGraphic);
+			}
+			else {
+				justifyText(text.graphics, text.content, text.font, text.lineHeight, text.width, text.color);
+			}
+			
+			//Setting the properties of the graphical object (x, y, ...)
+			for(key in textDescriptor) {
+				if(key != undefined)
+					text.graphics[key] = textDescriptor[key];
+			}
+			
+			text.page.container.addChild(text.graphics);
+		}
+		
 		return text;
 	}
 	
@@ -443,5 +478,55 @@ if(typeof NoventEngine == "undefined") {
 		
 		canvasElement.style.width = width + "px";
 		canvasElement.style.height = height + "px";
+	}
+	
+	function justifyText(container, content, font, lineHeight, width, color) {
+		var words = content.split(' ');
+		var line = '';
+		
+		for(var n = 0; n < words.length; n++) {
+			var testLine;
+			if(n == 0) {
+				testLine = words[0];
+			}
+			else {
+				testLine = line + ' ' + words[n];
+			}
+			
+			var testTextContainer = new createjs.Text(testLine, font, color);
+			var testWidth = testTextContainer.getMeasuredWidth();
+			
+			var x = 0;
+			var y = 0;
+			if (testWidth > width && n > 0) {
+				justifyLine(container, line, font, color, width, x, y);
+				
+				line = words[n];
+				if(lineHeight)
+					y += lineHeight;
+				else
+					y += testTextContainer.getMeasuredLineHeight();
+			}
+			else {
+				line = testLine;
+			}
+		}
+	}
+	
+	function justifyLine(container, line, font, color, width, x, y) {
+		var words = line.split(' ');
+		var lineWithoutSpace = new createjs.Text(line.replace(/ /g, ""), font, color);
+		
+		var spaceWidth = (width - lineWithoutSpace.getMeasuredWidth())/(words.length - 1);
+		var lineX = x;
+		
+		for(var n = 0; n < words.length; n++) {
+			var word = new createjs.Text(words[n], font, color);
+			word.x = lineX;
+			word.y = y;
+			
+			container.addChild(word);
+			lineX = lineX + word.getMeasuredWidth() + spaceWidth;
+		}
 	}
 }
