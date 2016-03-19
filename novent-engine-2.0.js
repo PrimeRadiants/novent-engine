@@ -153,8 +153,9 @@ if(typeof NoventEngine == "undefined") {
 		page.name = pageDescriptor.name;
 		
 		page.events = new Array();
-		page.addEvent = function(event) {
-			
+		page.addEvent = function(funct) {
+			page.events.push(new NoventEngine.Event(page, funct));
+			return page.events[page.events.length - 1];
 		}
 		
 		page.container = new createjs.Container();
