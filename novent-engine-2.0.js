@@ -86,7 +86,6 @@ if(typeof NoventEngine == "undefined") {
 			novent.pages[novent.index].addToLoadQueue(queue);
 			
 			queue.on("complete", function() {
-				console.log("complete")
 				novent.readPage();
 			});
 			
@@ -163,9 +162,6 @@ if(typeof NoventEngine == "undefined") {
 		page.materials = new Map();
 		
 		page.get = function(targetName) {
-			console.log(targetName);
-			console.log(page.materials.get(targetName));
-			console.log(page.materials.get(targetName).graphics);
 			return createjs.Tween.get(page.materials.get(targetName).graphics)
 		}
 		
@@ -190,9 +186,7 @@ if(typeof NoventEngine == "undefined") {
 		});
 		
 		page.addToLoadQueue = function(queue) {
-			console.log("page:addToLoadQueue")
 			for(var m of page.materials.values()) {
-				console.log("load")
 				m.addToLoadQueue(queue);
 			}
 		}
@@ -280,13 +274,11 @@ if(typeof NoventEngine == "undefined") {
 		image.src = imageDescriptor.src;
 		
 		image.addToLoadQueue = function(queue) {
-			console.log("image.load")
 			//Adding src to novent global load queue
 			queue.loadFile({id:image.id, src: image.src});
 			
 			//When this file has finished loading : retreiving DOM element and creating graphic element
 			queue.on("fileload", function(event) {
-				console.log("fileload");
 				if(event.item.id == image.id) {
 					image.element = event.result;
 					image.graphics = new createjs.Bitmap(event.result);
@@ -341,7 +333,6 @@ if(typeof NoventEngine == "undefined") {
 					
 					this.currentTime = 0;
 					this.play();
-					console.log("readyState:" + video.graphics.image.readyState)
 					video.graphics.image.readyState = 4;
 				}
 				else if(type == "remove") {
@@ -404,15 +395,15 @@ if(typeof NoventEngine == "undefined") {
 		animation.play = function(type, callback) {
 			animation.graphics.addEventListener('animationend', function () {
 				if(type == "remove") {
+					if(callback != undefined)
+						callback();
 					animation.graphics.stop();
 					animation.page.container.removeChild(animation.graphics);
-					if(callback != undefined)
-						callback();
 				}
 				else if(type == "stop") {
-					animation.graphics.stop();
 					if(callback != undefined)
 						callback();
+					animation.graphics.stop();
 				}
 			});
 			animation.graphics.gotoAndPlay("animation");
@@ -435,7 +426,6 @@ if(typeof NoventEngine == "undefined") {
 		text.color = textDescriptor.color;
 		
 		text.addToLoadQueue = function(queue) {
-			console.log("text")
 			text.graphics = new createjs.Container();
 			
 			if(text.align != "justify") {
@@ -447,7 +437,6 @@ if(typeof NoventEngine == "undefined") {
 				text.graphics.addChild(textGraphic);
 			}
 			else {
-				console.log("jystify")
 				text.graphics = justifyText(text.graphics, text.content, text.font, text.lineHeight, text.width, text.color);
 			}
 			
@@ -456,7 +445,6 @@ if(typeof NoventEngine == "undefined") {
 				if(key != undefined)
 					text.graphics[key] = textDescriptor[key];
 			}
-			console.log(text.graphics);
 			text.page.container.addChild(text.graphics);
 		}
 		
@@ -465,6 +453,41 @@ if(typeof NoventEngine == "undefined") {
 	
 	NoventEngine.Sound = function(page, soundDescriptor) {
 		var sound = this;
+		
+		sound.page = page;
+		sound.name = soundDescriptor.name;
+		sound.id = page.name + ":" + sound.name;
+		sound.src = soundDescriptor.src;
+		
+		sound.addToLoadQueue = function(queue) {
+			queue.loadFile({id:sound.id, src: sound.src});
+			
+			queue.on("fileload", function(event) {
+				if(event.item.id == sound.id) {
+					sound.element = event.result;
+					console.log(sound.element);
+					//Setting the properties of the graphical object (x, y, ...)
+					for(key in soundDescriptor) {
+						if(key != undefined)
+							sound.element[key] = soundDescriptor[key];
+					}
+				}
+			});
+		}
+		
+		sound.play = function(type, callback) {
+			sound.element.addEventListener('ended', function () {
+				if(type == "loop") {
+					sound.element.play();
+				}
+				else if(type == "stop") {
+					if(callback != undefined)
+						callback();
+				}
+			});
+			sound.element.play();
+		}
+		
 		return sound;
 	}
 	
@@ -499,14 +522,11 @@ if(typeof NoventEngine == "undefined") {
 	
 	function justifyText(container, content, font, lineHeight, width, color) {
 		var words = content.split(' ');
-		console.log(words)
-		console.log(width);
 		var line = '';
 		var x = 0;
 		var y = 0;
 			
 		for(var n = 0; n < words.length; n++) {
-			console.log(line);
 			var testLine;
 			if(n == 0) {
 				testLine = words[0];
@@ -517,10 +537,8 @@ if(typeof NoventEngine == "undefined") {
 			
 			var testTextContainer = new createjs.Text(testLine, font, color);
 			var testWidth = testTextContainer.getMeasuredWidth();
-			console.log("mesure: " + testTextContainer.getMeasuredLineHeight())
 			
 			
-			console.log(testWidth > width);
 			if (testWidth > width && n > 0) {
 				container = justifyLine(container, line, font, color, width, x, y);
 				
