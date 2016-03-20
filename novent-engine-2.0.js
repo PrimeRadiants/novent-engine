@@ -384,7 +384,7 @@ if(typeof NoventEngine == "undefined") {
 						images: [animation.element],
 						frames: {width: animation.width, height: animation.height},
 						animations: {
-							animation: [0, animation.frames]
+							animation: [0, animation.frames - 1]
 						}
 					});
 					
@@ -403,20 +403,19 @@ if(typeof NoventEngine == "undefined") {
 		
 		animation.play = function(type, callback) {
 			animation.graphics.addEventListener('animationend', function () {
-				if(type == "loop") {
-					animation.graphics.goToAndPlay("animation");
-				}
-				else if(type == "remove") {
+				if(type == "remove") {
+					animation.graphics.stop();
 					animation.page.container.removeChild(animation.graphics);
 					if(callback != undefined)
 						callback();
 				}
 				else if(type == "stop") {
+					animation.graphics.stop();
 					if(callback != undefined)
 						callback();
 				}
 			});
-			animation.graphics.goToAndPlay("animation");
+			animation.graphics.gotoAndPlay("animation");
 		}
 		
 		return animation;
