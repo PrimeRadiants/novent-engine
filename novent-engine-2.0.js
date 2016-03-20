@@ -173,6 +173,22 @@ if(typeof NoventEngine == "undefined") {
 			page.materials.set(e.name, new NoventEngine.Image(page, e))
 		});
 		
+		pageDescriptor.materials.animations.forEach(function(e) {
+			page.materials.set(e.name, new NoventEngine.Animation(page, e))
+		});
+		
+		pageDescriptor.materials.videos.forEach(function(e) {
+			page.materials.set(e.name, new NoventEngine.Video(page, e))
+		});
+		
+		pageDescriptor.materials.sounds.forEach(function(e) {
+			page.materials.set(e.name, new NoventEngine.Sound(page, e))
+		});
+		
+		pageDescriptor.materials.texts.forEach(function(e) {
+			page.materials.set(e.name, new NoventEngine.Text(page, e))
+		});
+		
 		page.addToLoadQueue = function(queue) {
 			console.log("page:addToLoadQueue")
 			for(var m of page.materials.values()) {
@@ -303,7 +319,7 @@ if(typeof NoventEngine == "undefined") {
 			queue.loadFile({id:video.id, src: video.src});
 			
 			//When this file has finished loading : retreiving DOM element and creating graphic element
-			queue.loadQueue.on("fileload", function(event) {
+			queue.on("fileload", function(event) {
 				if(event.item.id == video.id) {
 					video.element = event.result;
 					video.graphics = new createjs.Bitmap(event.result);
@@ -360,7 +376,7 @@ if(typeof NoventEngine == "undefined") {
 			//Adding src to novent global load queue
 			queue.loadFile({id:animation.id, src: animation.src});
 			
-			queue.loadQueue.on("fileload", function(event) {
+			queue.on("fileload", function(event) {
 				if(event.item.id == animation.id) {
 					animation.element = event.result;
 					animation.spriteSheet = new createjs.SpriteSheet({
@@ -420,6 +436,7 @@ if(typeof NoventEngine == "undefined") {
 		text.color = textDescriptor.color;
 		
 		text.addToLoadQueue = function(queue) {
+			console.log("text")
 			text.graphics = new createjs.Container();
 			
 			if(text.align != "justify") {
@@ -431,7 +448,8 @@ if(typeof NoventEngine == "undefined") {
 				text.graphics.addChild(textGraphic);
 			}
 			else {
-				justifyText(text.graphics, text.content, text.font, text.lineHeight, text.width, text.color);
+				console.log("jystify")
+				text.graphics = justifyText(text.graphics, text.content, text.font, text.lineHeight, text.width, text.color);
 			}
 			
 			//Setting the properties of the graphical object (x, y, ...)
@@ -439,7 +457,7 @@ if(typeof NoventEngine == "undefined") {
 				if(key != undefined)
 					text.graphics[key] = textDescriptor[key];
 			}
-			
+			console.log(text.graphics);
 			text.page.container.addChild(text.graphics);
 		}
 		
@@ -482,9 +500,14 @@ if(typeof NoventEngine == "undefined") {
 	
 	function justifyText(container, content, font, lineHeight, width, color) {
 		var words = content.split(' ');
+		console.log(words)
+		console.log(width);
 		var line = '';
-		
+		var x = 0;
+		var y = 0;
+			
 		for(var n = 0; n < words.length; n++) {
+			console.log(line);
 			var testLine;
 			if(n == 0) {
 				testLine = words[0];
@@ -495,11 +518,12 @@ if(typeof NoventEngine == "undefined") {
 			
 			var testTextContainer = new createjs.Text(testLine, font, color);
 			var testWidth = testTextContainer.getMeasuredWidth();
+			console.log("mesure: " + testTextContainer.getMeasuredLineHeight())
 			
-			var x = 0;
-			var y = 0;
+			
+			console.log(testWidth > width);
 			if (testWidth > width && n > 0) {
-				justifyLine(container, line, font, color, width, x, y);
+				container = justifyLine(container, line, font, color, width, x, y);
 				
 				line = words[n];
 				if(lineHeight)
@@ -511,6 +535,16 @@ if(typeof NoventEngine == "undefined") {
 				line = testLine;
 			}
 		}
+		
+		if(line != '') {
+			var lastLine = new createjs.Text(line, font, color);
+			lastLine.x = x;
+			lastLine.y = y;
+			
+			container.addChild(lastLine);
+		}
+		
+		return container;
 	}
 	
 	function justifyLine(container, line, font, color, width, x, y) {
@@ -528,5 +562,7 @@ if(typeof NoventEngine == "undefined") {
 			container.addChild(word);
 			lineX = lineX + word.getMeasuredWidth() + spaceWidth;
 		}
+		
+		return container;
 	}
 }
