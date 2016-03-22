@@ -192,6 +192,12 @@ if(typeof NoventEngine == "undefined") {
 		}
 		
 		page.appendToNovent = function() {
+			var sortFunction = function(obj1, obj2, options) {
+				 if (obj1.index > obj2.index) { return 1; }
+				 if (obj1.index < obj2.index) { return -1; }
+				 return 0;
+			}
+			page.container.sortChildren(sortFunction);
 			page.novent.stage.addChild(page.container);
 		}
 		
