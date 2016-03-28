@@ -94,8 +94,10 @@ if(typeof NoventEngine == "undefined") {
 		
 		novent.readPage = function() {
 			if(novent.index != novent.pages.length) {
-				if(novent.index != 0)
+				if(novent.index != 0) {
 					novent.pages[novent.index - 1].removeFromNovent();
+					novent.pages[novent.index - 1].unload();
+				}	
 				novent.pages[novent.index].read();
 				novent.index++;
 			}
@@ -201,6 +203,12 @@ if(typeof NoventEngine == "undefined") {
 				page.container.sortChildren(sortFunction);
 
 			});
+		}
+		
+		page.unload = function() {
+			for(var m of page.materials.values()) {
+				delete m;
+			}
 		}
 		
 		page.appendToNovent = function() {
@@ -551,26 +559,25 @@ if(typeof NoventEngine == "undefined") {
 		
 		function loop() {
 			if(playing) {
-				var value = minValue + Math.random()*2*wiggleDescriptor.amplitude;
-				
+				var value = minValue + Math.random()*2*wiggle.amplitude;
 				var change = new Object();
-				change[wiggleDescriptor.property] = value;
-				page.get(wiggleDescriptor.target).to(change, frequency, createjs.Ease[ease]).call(function() {
+				change[wiggle.property] = value;
+				page.get(wiggle.target).to(change, wiggle.frequency, createjs.Ease[wiggle.ease]).call(function() {
 					loop();
 				});
 			}
 			else {
 				var change = new Object();
-				change[wiggleDescriptor.property] = originValue;
-				page.get(wiggleDescriptor.target).to(change, frequency, createjs.Ease[ease]);
+				change[wiggle.property] = originValue;
+				page.get(wiggle.target).to(change, wiggle.frequency, createjs.Ease[wiggle.ease]);
 			}
 		}
 
 		wiggle.play = function() {
-			originValue = page.materials.get(wiggleDescriptor.target)[wiggleDescriptor.property];
-			minValue = originValue - wiggleDescriptor.amplitude;
+			originValue = page.materials.get(wiggle.target).graphics[wiggle.property];
+			minValue = originValue - wiggle.amplitude;
 			playing = true;
-			page.materials.set(wiggleDescriptor.name, wiggle);
+			page.materials.set(wiggle.name, wiggle);
 			loop();
 		};
 
