@@ -94,6 +94,8 @@ if(typeof NoventEngine == "undefined") {
 		
 		novent.readPage = function() {
 			if(novent.index != novent.pages.length) {
+				if(novent.index != 0)
+					novent.pages[novent.index - 1].removeFromNovent();
 				novent.pages[novent.index].read();
 				novent.index++;
 			}
@@ -340,8 +342,12 @@ if(typeof NoventEngine == "undefined") {
 			});
 		}
 		
+		var eventAftermath;
+		
 		video.play = function(type, callback) {
-			video.element.addEventListener('ended', function () {
+			video.element.removeEventListener('ended', eventAftermath, false);
+			
+			eventAftermath = function () {
 				if(type == "loop") {
 					if(playing) {
 						this.currentTime = 0;
@@ -358,7 +364,9 @@ if(typeof NoventEngine == "undefined") {
 					if(callback != undefined)
 						callback();
 				}
-			}, false);
+			}
+
+			video.element.addEventListener('ended', eventAftermath, false);
 			playing = true;
 			video.element.play();
 		}
