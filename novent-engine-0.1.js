@@ -31,13 +31,13 @@ if(typeof NoventEngine == "undefined") {
 		novent.buttonVisible = false;
 		
 		novent.showButton = function() {
-			createjs.Tween.get(novent.button.graphics).to({alpha: 1}, 2000).call(function() {
+			createjs.Tween.get(novent.button.graphics).to({alpha: 1}, 1000).call(function() {
 				novent.buttonVisible = true;
 			});
 		}
 		
 		novent.hideButton = function() {
-			createjs.Tween.get(novent.button.graphics).to({alpha: 0}, 2000).call(function() {
+			createjs.Tween.get(novent.button.graphics).to({alpha: 0}, 1000).call(function() {
 				novent.buttonVisible = false;
 			});;
 		}
@@ -83,10 +83,22 @@ if(typeof NoventEngine == "undefined") {
 			
 			
 			var queue = new createjs.LoadQueue();
-			novent.pages[novent.index].addToLoadQueue(queue);
+			
+			createjs.Sound.SUPPORTED_EXTENSIONS = ["mp3"];
+			queue.installPlugin(createjs.Sound);
+			novent.pages.forEach(function(p) {
+				p.addToLoadQueue(queue);
+			})
+			//novent.pages[novent.index].addToLoadQueue(queue);
+			
+			queue.on("progress", function(event) {
+				progress.update(queue.progress*100);
+			});
 			
 			queue.on("complete", function() {
-				novent.readPage();
+				var loader = document.getElementById("loader");
+				loader.style.opacity = 0;
+				setTimeout(function(){ novent.readPage(); }, 2000);
 			});
 			
 			queue.load();
@@ -213,6 +225,7 @@ if(typeof NoventEngine == "undefined") {
 		
 		page.appendToNovent = function() {
 			page.novent.stage.addChild(page.container);
+			page.novent.stage.swapChildren(page.container, page.novent.button.graphics);
 		}
 		
 		page.removeFromNovent = function() {
@@ -242,11 +255,12 @@ if(typeof NoventEngine == "undefined") {
 		
 		page.read = function() {
 			var queue = new createjs.LoadQueue();
+			queue.installPlugin(createjs.Sound);
 			var nextPage = page.novent.nextPage();
-			if(nextPage) {
+			/*if(nextPage) {
 				nextPage.addToLoadQueue(queue);
 				queue.load();
-			}
+			}*/
 			
 			page.appendToNovent();
 			page.readEvent();
@@ -519,7 +533,8 @@ if(typeof NoventEngine == "undefined") {
 			
 			queue.on("fileload", function(event) {
 				if(event.item.id == sound.id) {
-					sound.graphics = event.result;
+					sound.graphics = createjs.Sound.play(sound.id);
+					sound.graphics.stop();
 					//Setting the properties of the graphical object (x, y, ...)
 					for(key in soundDescriptor) {
 						if(key != undefined)
@@ -530,7 +545,7 @@ if(typeof NoventEngine == "undefined") {
 		}
 		
 		sound.play = function(type, callback) {
-			sound.graphics.addEventListener('ended', function () {
+			sound.graphics.on('complete', function () {
 				if(type == "loop") {
 					if(playing)
 						sound.graphics.play();
