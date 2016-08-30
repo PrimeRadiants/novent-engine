@@ -1,0 +1,1 @@
+"use strict";this.NoventEngine=this.NoventEngine||{},function(){function n(n,e,t,i){if(n&&!e&&!t&&!i&&NoventEngine.novents)return NoventEngine.novents[n];var v=this;v.name=n,v.canvas=document.getElementById(e),v.width=v.canvas.width=i,v.height=v.canvas.height=t,NoventEngine.novents||(NoventEngine.novents=new Object),NoventEngine.novents[n]=v}NoventEngine.novent=n}();

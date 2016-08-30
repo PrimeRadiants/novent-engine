@@ -14,7 +14,7 @@ function clean() {
 }
 
 function compile() {
-  return gulp.src('src/*.js')
+  return gulp.src('src/**/*.js')
     .pipe(concat('novent-engine.js'))
     .pipe(uglify())
     .pipe(gulp.dest('dist'));
