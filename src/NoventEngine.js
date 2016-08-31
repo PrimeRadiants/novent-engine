@@ -1,3 +1,1 @@
-'use strict';
-
-this.NoventEngine = this.NoventEngine || {};
+var NoventEngine = NoventEngine || {};
