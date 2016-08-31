@@ -4,7 +4,7 @@
   "description": "Javascript library to build event books",
   "main": "dist/novent.js",
   "scripts": {
-    "test": "karma start --single-run --browsers PhantomJS"
+    "test": "karma start --browsers Firefox --single-run"
   },
   "repository": {
     "type": "git",

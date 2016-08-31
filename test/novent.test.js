@@ -57,5 +57,10 @@ describe('novent', function() {
       expect(NoventEngine.novent.bind(NoventEngine.novent, 'test', 'canvas', -1000, 1000)).to.throw(InvalidInputException);
     });
 
+    it('Should add the new novent to the NoventEngine object', function() {
+      NoventEngine.novent('test', 'canvas', 1000, 1000);
+      assert.isOk(NoventEngine.novents.test);
+    });
+
   });
 });
