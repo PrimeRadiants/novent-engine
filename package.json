@@ -4,7 +4,7 @@
   "description": "Javascript library to build event books",
   "main": "dist/novent.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "karma start --single-run --browsers PhantomJS"
   },
   "repository": {
     "type": "git",
@@ -33,6 +33,7 @@
     "karma-chrome-launcher": "^2.0.0",
     "karma-jasmine": "^1.0.2",
     "karma-mocha": "^1.1.1",
+    "karma-phantomjs-launcher": "^1.0.2",
     "mocha": "^3.0.2"
   }
 }
