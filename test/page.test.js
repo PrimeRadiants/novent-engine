@@ -13,7 +13,7 @@ describe('page', function() {
 
   describe('constructor', function() {
 
-    it('Should throw InvalidInputException with missing canvas', function() {
+    it('Should throw InvalidInputException with missing novent', function() {
       expect(NoventEngine.page.bind(NoventEngine.page)).to.throw(InvalidInputException);
     });
 
