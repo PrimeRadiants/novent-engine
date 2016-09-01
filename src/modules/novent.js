@@ -26,6 +26,9 @@
 			novent.width = novent.canvas.width = validateNumericValue('width', width);
 			novent.height = novent.canvas.height = validateNumericValue('height', height);
 
+      novent.pages = [];
+      novent.page = page;
+
 			if(!NoventEngine.novents)
 				NoventEngine.novents = {};
 
@@ -57,10 +60,14 @@
 				value = Number.parseInt(value);
 
 				if(!Number.isInteger(value) || value < 0)
-					throw new InvalidInputException(field, 'Invalid pramameter ' + field + ', should be a positive integer');
+					throw new InvalidInputException(field, 'invalid pramameter ' + field + ', should be a positive integer');
 
 				return value;
 			}
+
+      function page(index) {
+        return NoventEngine.page(novent, index);
+      }
 
 			return novent;
 		}
