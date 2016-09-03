@@ -3,7 +3,7 @@
 
 	NoventEngine.novent = novent;
 
-  function novent(name, canvasId, height, width) {
+  function novent(name, canvasId, height, width, init) {
 
 		if(name && !canvasId && !height && !width) {
 			if(!NoventEngine.novents || !NoventEngine.novents[name])
@@ -23,7 +23,7 @@
 		}
   }
 
-	var Novent = function(name, canvasId, height, width) {
+	var Novent = function(name, canvasId, height, width, init) {
 		var novent = this;
 
 		novent.name = validateNoventName(name);
@@ -33,6 +33,15 @@
 
 		novent.pages = [];
 		novent.page = page;
+		novent.index = 0;
+
+		novent.scope = {};
+
+		novent.stage = new createjs.Stage(novent.canvas);
+
+		novent.waiting = true;
+
+		novent.play = play;
 
 		function validateNoventName(name) {
 			if(!name || name === '')
@@ -65,10 +74,62 @@
 			return value;
 		}
 
-		function page(index) {
-			return NoventEngine.page(novent, index);
+		function page(index, init) {
+			return NoventEngine.page(novent, index, init);
 		}
 
+		function play() {
+			if(novent.index == 0 && novent.waiting) {
+				return novent.pages[novent.index].play();
+			}
+			if(novent.index != novent.pages.length && novent.waiting) {
+				return novent.pages[novent.index].play();
+			}
+			else if(novent.index == novent.pages.length && novent.waiting) {
+				novent.trigger("complete");
+			}
+		}
+
+		function initialize() {
+			createjs.Ticker.setFPS(30);
+			createjs.Ticker.addEventListener("tick", novent.stage);
+
+			if(init)
+				init(novent.stage, novent);
+
+			window.onresize = function() {
+				resize(novent.canvas);
+			}
+			resize(novent.canvas);
+		}
+
+		initialize();
 		return novent;
 	}
+
+	function resize(canvasElement) {
+		canvasElement.style.position = "fixed";
+		canvasElement.style.top = 0;
+		canvasElement.style.left = 0;
+		canvasElement.style.bottom = 0;
+		canvasElement.style.right = 0;
+		canvasElement.style.margin = "auto";
+
+		var width = window.innerWidth;
+    var height = window.innerHeight;
+
+		var screenRatio = height/width;
+		var canvasRatio = canvasElement.height/canvasElement.width;
+
+		if(screenRatio <= canvasRatio) {
+			width = height / canvasRatio;
+		} else {
+			height = width * canvasRatio;
+		}
+
+		canvasElement.style.width = width + "px";
+		canvasElement.style.height = height + "px";
+	}
+
+	heir.inherit(Novent, EventEmitter);
 })();

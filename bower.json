@@ -1,0 +1,24 @@
+{
+  "name": "novent-engine",
+  "description": "Javascript library to build event books",
+  "main": "dist/novent-engine.js",
+  "authors": [
+    "Shanira"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "novent"
+  ],
+  "homepage": "https://github.com/PrimeRadiants/novent-engine",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "eventEmitter": "^5.1.0",
+    "heir": "^3.0.0"
+  }
+}

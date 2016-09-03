@@ -2,7 +2,7 @@
   "name": "novent-engine",
   "version": "0.1.0",
   "description": "Javascript library to build event books",
-  "main": "dist/novent.js",
+  "main": "dist/novent-engine.js",
   "scripts": {
     "test": "karma start --browsers Firefox --single-run"
   },
@@ -21,10 +21,13 @@
   "homepage": "https://github.com/PrimeRadiants/novent-engine#readme",
   "devDependencies": {
     "chai": "^3.5.0",
+    "createjs": "0.0.0",
     "del": "^2.2.2",
     "gulp": "^3.9.1",
+    "gulp-browserify": "^0.5.1",
     "gulp-clean": "^0.3.2",
     "gulp-concat": "^2.6.0",
+    "gulp-load-plugins": "^1.2.4",
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.7",
@@ -36,5 +39,8 @@
     "karma-mocha": "^1.1.1",
     "karma-phantomjs-launcher": "^1.0.2",
     "mocha": "^3.0.2"
+  },
+  "dependencies": {
+    "wolfy87-eventemitter": "^5.1.0"
   }
 }
