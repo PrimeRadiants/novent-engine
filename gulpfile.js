@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var del = require('del');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
+var rename = require("gulp-rename");
 
 gulp.task('default', ['compile']);
 gulp.task('watch', watch);
@@ -16,7 +17,9 @@ function clean() {
 function compile() {
   return gulp.src(['bower_components/eventEmitter/EventEmitter.js', 'bower_components/heir/heir.js', 'src/**/*.js'])
     .pipe(concat('novent-engine.js'))
+    .pipe(gulp.dest('dist'))
     .pipe(uglify())
+    .pipe(rename({ extname: '.min.js' }))
     .pipe(gulp.dest('dist'));
 }
 
