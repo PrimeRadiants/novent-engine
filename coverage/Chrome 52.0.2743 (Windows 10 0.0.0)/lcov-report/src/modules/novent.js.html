@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src\modules\novent.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">src/modules/</a> novent.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">87.34% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>69/79</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">67.39% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>31/46</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">81.82% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>9/11</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">87.34% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>69/79</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">(function() {
+	'use strict';
+&nbsp;
+	NoventEngine.novent = novent;
+&nbsp;
+  function novent(name, canvasId, height, width, init) {
+&nbsp;
+		if(name &amp;&amp; !canvasId &amp;&amp; !height &amp;&amp; !width) {
+			if(!NoventEngine.novents || !NoventEngine.novents[name])
+				throw new UnknownNoventExeption(name, 'unknown novent with name ' + name);
+&nbsp;
+			return NoventEngine.novents[name];
+		}
+		else {
+			var novent = new Novent(name, canvasId, height, width);
+&nbsp;
+			if(!NoventEngine.novents)
+				NoventEngine.novents = {};
+&nbsp;
+			NoventEngine.novents[name] = novent;
+&nbsp;
+			return novent;
+		}
+  }
+&nbsp;
+	var Novent = function(name, canvasId, height, width, init) {
+		var novent = this;
+&nbsp;
+		novent.name = validateNoventName(name);
+		novent.canvas = validateCanvasId(canvasId);
+		novent.width = novent.canvas.width = validateNumericValue('width', width);
+		novent.height = novent.canvas.height = validateNumericValue('height', height);
+&nbsp;
+		novent.pages = [];
+		novent.page = page;
+		novent.index = 0;
+&nbsp;
+		novent.scope = {};
+&nbsp;
+		novent.stage = new createjs.Stage(novent.canvas);
+&nbsp;
+		novent.waiting = true;
+&nbsp;
+		novent.play = play;
+&nbsp;
+		function validateNoventName(name) {
+			if(!name || name === '')
+				throw new InvalidInputException('name', 'missing parameter name');
+&nbsp;
+			return name;
+		}
+&nbsp;
+		function validateCanvasId(canvasId) {
+			<span class="missing-if-branch" title="if path not taken" >I</span>if(!canvasId || canvasId === '')
+<span class="cstat-no" title="statement not covered" >				throw new InvalidInputException('canvasId', 'missing parameter canvasId');</span>
+&nbsp;
+			var canvas = document.getElementById(canvasId);
+&nbsp;
+			if(!canvas)
+				throw new InvalidInputException('canvasId', 'invalid canvasId, no canvas found with id ' + canvasId);
+&nbsp;
+			return canvas;
+		}
+&nbsp;
+		function validateNumericValue(field, value) {
+			if(!value || value === '')
+				throw new InvalidInputException(field, 'missing parameter ' + field);
+&nbsp;
+			value = Number.parseInt(value);
+&nbsp;
+			if(!Number.isInteger(value) || value &lt; 0)
+				throw new InvalidInputException(field, 'invalid pramameter ' + field + ', should be a positive integer');
+&nbsp;
+			return value;
+		}
+&nbsp;
+		function page(index, init) {
+			return NoventEngine.page(novent, index, init);
+		}
+&nbsp;
+<span class="fstat-no" title="function not covered" >		function play() {</span>
+<span class="cstat-no" title="statement not covered" >			if(novent.index == 0 &amp;&amp; novent.waiting) {</span>
+<span class="cstat-no" title="statement not covered" >				return novent.pages[novent.index].play();</span>
+			}
+<span class="cstat-no" title="statement not covered" >			if(novent.index != novent.pages.length &amp;&amp; novent.waiting) {</span>
+<span class="cstat-no" title="statement not covered" >				return novent.pages[novent.index].play();</span>
+			}
+			else <span class="cstat-no" title="statement not covered" >if(novent.index == novent.pages.length &amp;&amp; novent.waiting) {</span>
+<span class="cstat-no" title="statement not covered" >				novent.trigger("complete");</span>
+			}
+		}
+&nbsp;
+		function initialize() {
+			createjs.Ticker.setFPS(30);
+			createjs.Ticker.addEventListener("tick", novent.stage);
+&nbsp;
+			<span class="missing-if-branch" title="if path not taken" >I</span>if(init)
+<span class="cstat-no" title="statement not covered" >				init(novent.stage, novent);</span>
+&nbsp;
+			window.onresize = <span class="fstat-no" title="function not covered" >function() {</span>
+<span class="cstat-no" title="statement not covered" >				resize(novent.canvas);</span>
+			}
+			resize(novent.canvas);
+		}
+&nbsp;
+		initialize();
+		return novent;
+	}
+&nbsp;
+	function resize(canvasElement) {
+		canvasElement.style.position = "fixed";
+		canvasElement.style.top = 0;
+		canvasElement.style.left = 0;
+		canvasElement.style.bottom = 0;
+		canvasElement.style.right = 0;
+		canvasElement.style.margin = "auto";
+&nbsp;
+		var width = window.innerWidth;
+    var height = window.innerHeight;
+&nbsp;
+		var screenRatio = height/width;
+		var canvasRatio = canvasElement.height/canvasElement.width;
+&nbsp;
+		<span class="missing-if-branch" title="if path not taken" >I</span>if(screenRatio &lt;= canvasRatio) {
+<span class="cstat-no" title="statement not covered" >			width = height / canvasRatio;</span>
+		} else {
+			height = width * canvasRatio;
+		}
+&nbsp;
+		canvasElement.style.width = width + "px";
+		canvasElement.style.height = height + "px";
+	}
+&nbsp;
+	heir.inherit(Novent, EventEmitter);
+})();
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Sep 05 2016 18:10:22 GMT+0200 (Paris, Madrid (heure d’été))
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

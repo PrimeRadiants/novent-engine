@@ -15,8 +15,12 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'lib/**/*.js',
-      'dist/novent-engine.js',
+      'bower_components/heir/heir.js',
+      'bower_components/eventEmitter/EventEmitter.js',
+      'lib/createjs-2015.11.26.min.js',
+      'src/exceptions/*.js',
+      'src/NoventEngine.js',
+      'src/modules/*.js',
       'test/**/*.test.js'
     ],
 
@@ -29,7 +33,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      '**/dist/novent-engine.js': 'coverage'
+      '**/src/**/*.js': 'coverage'
     },
 
 
@@ -74,5 +78,5 @@ module.exports = function(config) {
       dir : 'coverage/'
     }
 
-  })
-}
+  });
+};
