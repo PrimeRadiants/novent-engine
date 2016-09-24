@@ -3,7 +3,7 @@
 
   NoventEngine.page = page;
 
-  function page(novent, index, init, materials) {
+  function page(novent, index, name, init, materials) {
     if(!novent)
       throw new InvalidInputException('novent', 'missing parameter novent');
 
@@ -11,18 +11,19 @@
       return novent.pages[index];
     }
     else {
-      novent.pages[index] = new Page(novent, index, init, materials);
+      novent.pages[index] = new Page(novent, index, name, init, materials);
       return novent.pages[index];
     }
   }
 
-  var Page = function(novent, index, init, materials) {
+  var Page = function(novent, index, name, init, materials) {
     var page = this;
     if(!novent)
       throw new InvalidInputException('novent', 'missing parameter novent');
 
     page.index = validateNumericValue('index', index);
     page.novent = novent;
+		page.name = name;
 
 		page.events = [];
 		page.event = event;

@@ -74,8 +74,8 @@
 			return value;
 		}
 
-		function page(index, init, materials) {
-			return NoventEngine.page(novent, index, init, materials);
+		function page(index, name, init, materials) {
+			return NoventEngine.page(novent, index, name, init, materials);
 		}
 
 		function play() {
