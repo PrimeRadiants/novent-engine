@@ -3,7 +3,7 @@
 
   NoventEngine.page = page;
 
-  function page(novent, index, init) {
+  function page(novent, index, init, materials) {
     if(!novent)
       throw new InvalidInputException('novent', 'missing parameter novent');
 
@@ -11,12 +11,12 @@
       return novent.pages[index];
     }
     else {
-      novent.pages[index] = new Page(novent, index, init);
+      novent.pages[index] = new Page(novent, index, init, materials);
       return novent.pages[index];
     }
   }
 
-  var Page = function(novent, index, init) {
+  var Page = function(novent, index, init, materials) {
     var page = this;
     if(!novent)
       throw new InvalidInputException('novent', 'missing parameter novent');
@@ -33,6 +33,11 @@
 		page.container = new createjs.Container();
 
 		page.play = play;
+		page.loading = false;
+		page.loadQueue = new createjs.LoadQueue(true);
+		page.load = load;
+
+		page.lib = {};
 
     function validateNumericValue(field, value) {
       if(value === undefined || value === '')
@@ -50,10 +55,47 @@
 			return NoventEngine.event(page, index, funct);
 		}
 
+		function load() {
+			page.loading = true;
+
+			if(materials && Object.keys(materials).length != 0) {
+				for(var key in materials) {
+					page.loadQueue.loadFile({id:key, src: materials[key]});
+				}
+
+				page.loadQueue.on("fileload", function(event) {
+					page.lib[key] = event.result;
+				});
+
+				page.loadQueue.on("complete", function() {
+					page.loading = false;
+					page.trigger("loadComplete");
+				});
+
+				page.loadQueue.load();
+			}
+			else {
+				page.loadQueue.progress = 1;
+				page.loading = false;
+				page.trigger("loadComplete");
+			}
+		}
+
 		function play() {
 			if(page.index == 0) {
-				inititalize();
-				return page.events[page.index].play();
+				if(page.loadQueue.loaded) {
+					inititalize();
+					return page.events[page.index].play();
+				}
+				else {
+					page.on("loadComplete", function() {
+						inititalize();
+						return page.events[page.index].play();
+					});
+
+					if(!page.loading)
+						page.load();
+				}
 			}
 			else if(page.index != page.events.length) {
 				return page.events[page.index].play();
@@ -77,4 +119,6 @@
 
 		return page;
   }
+
+	heir.inherit(Page, EventEmitter);
 })();
