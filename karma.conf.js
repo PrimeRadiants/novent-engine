@@ -15,8 +15,12 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'lib/**/*.js',
-      'dist/*.js',
+      'bower_components/heir/heir.js',
+      'bower_components/eventEmitter/EventEmitter.js',
+      'lib/createjs-2015.11.26.min.js',
+      'src/exceptions/*.js',
+      'src/NoventEngine.js',
+      'src/modules/*.js',
       'test/**/*.test.js'
     ],
 
@@ -29,13 +33,14 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      '**/src/**/*.js': 'coverage'
     },
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage', 'coveralls'],
 
 
     // web server port
@@ -66,6 +71,12 @@ module.exports = function(config) {
 
     // Concurrency level
     // how many browser should be started simultaneous
-    concurrency: Infinity
-  })
-}
+    concurrency: Infinity,
+
+    coverageReporter: {
+      type : 'lcov',
+      dir : 'coverage/'
+    }
+
+  });
+};
