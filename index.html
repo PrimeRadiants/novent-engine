@@ -8,33 +8,25 @@
 <script>
   NoventEngine.novent("novent", "canvas_id", 1080, 1920);
   NoventEngine.novent("novent").page(0, function() {console.log("Page 0")});
-  NoventEngine.novent("novent").page(0).event(0, function() {
-    return new Promise(function(resolve) {
+  NoventEngine.novent("novent").page(0).event(0, function(resolve) {
       console.log("event 0");
       resolve();
-    })
   });
 
-  NoventEngine.novent("novent").page(0).event(1, function() {
-    return new Promise(function(resolve) {
+  NoventEngine.novent("novent").page(0).event(1, function(resolve) {
       console.log("event 1");
       resolve();
-    })
   });
 
-  NoventEngine.novent("novent").page(0).event(2, function() {
-    return new Promise(function(resolve) {
+  NoventEngine.novent("novent").page(0).event(2, function(resolve) {
       console.log("event 2");
       resolve();
-    })
   });
 
   NoventEngine.novent("novent").page(1, function() {console.log("Page 1")});
-  NoventEngine.novent("novent").page(1).event(0, function() {
-    return new Promise(function(resolve) {
+  NoventEngine.novent("novent").page(1).event(0, function(resolve) {
       console.log("event 0");
       resolve();
-    })
   });
 
   NoventEngine.novent("novent").on("complete", function() {

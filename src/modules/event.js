@@ -20,7 +20,7 @@
     var event = this;
 
     event.page = page;
-    event.function = funct;
+    event.function = eventFunction;
 
     event.play = play;
 
@@ -36,6 +36,12 @@
           }
         });
     }
+
+		function eventFunction(container, page) {
+			return new Promise(function(resolve) {
+				funct(resolve, container, page)
+			});
+		}
 
     return event;
   }
