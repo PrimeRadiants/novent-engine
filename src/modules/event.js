@@ -30,6 +30,7 @@
         .then(function() {
           event.page.index++
           event.page.novent.waiting = true;
+					event.page.novent.trigger("eventend");
           if(event.page.index == event.page.events.length) {
             event.page.novent.index++;
             return event.page.novent.play();

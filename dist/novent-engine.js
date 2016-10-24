@@ -631,6 +631,7 @@ function UnknownNoventExeption(name, message) {
         .then(function() {
           event.page.index++
           event.page.novent.waiting = true;
+					event.page.novent.trigger("eventend");
           if(event.page.index == event.page.events.length) {
             event.page.novent.index++;
             return event.page.novent.play();
@@ -851,7 +852,7 @@ function UnknownNoventExeption(name, message) {
 				}
 
 				page.loadQueue.on("fileload", function(event) {
-					page.lib[key] = event.result;
+					page.lib[event.item.id] = event.result;
 				});
 
 				page.loadQueue.on("complete", function() {

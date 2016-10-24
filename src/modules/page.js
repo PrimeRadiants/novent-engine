@@ -65,7 +65,7 @@
 				}
 
 				page.loadQueue.on("fileload", function(event) {
-					page.lib[key] = event.result;
+					page.lib[event.item.id] = event.result;
 				});
 
 				page.loadQueue.on("complete", function() {
