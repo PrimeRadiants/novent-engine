@@ -25,6 +25,7 @@
     event.play = play;
 
     function play() {
+			event.page.novent.trigger("eventstart");
       event.page.novent.waiting = false;
       return event.function(event.page.container, event.page)
         .then(function() {
