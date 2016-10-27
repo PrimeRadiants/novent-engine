@@ -28,22 +28,24 @@
       event.page.novent.waiting = false;
       return event.function(event.page.container, event.page)
         .then(function() {
-          event.page.index++
+          event.page.index++;
           event.page.novent.waiting = true;
-					event.page.novent.trigger("eventend");
           if(event.page.index == event.page.events.length) {
             event.page.novent.index++;
             return event.page.novent.play();
           }
+					else {
+						event.page.novent.trigger("eventend");
+					}
         });
     }
 
 		function eventFunction(container, page) {
 			return new Promise(function(resolve) {
-				funct(resolve, container, page)
+				funct(resolve, container, page);
 			});
 		}
 
     return event;
-  }
+  };
 })();

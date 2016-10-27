@@ -59,7 +59,7 @@
 		function load() {
 			page.loading = true;
 
-			if(materials && Object.keys(materials).length != 0) {
+			if(materials && Object.keys(materials).length !== 0) {
 				for(var key in materials) {
 					page.loadQueue.loadFile({id:key, src: materials[key]});
 				}
@@ -83,7 +83,7 @@
 		}
 
 		function play() {
-			if(page.index == 0) {
+			if(page.index === 0) {
 				if(page.loadQueue.loaded) {
 					inititalize();
 					return page.events[page.index].play();
@@ -111,7 +111,8 @@
 				 if (obj1.index > obj2.index) { return 1; }
 				 if (obj1.index < obj2.index) { return -1; }
 				 return 0;
-			}
+			};
+
 			page.container.sortChildren(sortFunction);
 			page.novent.stage.addChild(page.container);
 			if(page.novent.index > 0)
@@ -119,7 +120,7 @@
 		}
 
 		return page;
-  }
+  };
 
 	heir.inherit(Page, EventEmitter);
 })();

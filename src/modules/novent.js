@@ -79,7 +79,7 @@
 		}
 
 		function play() {
-			if(novent.index == 0 && novent.waiting) {
+			if(novent.index === 0 && novent.waiting) {
 				return novent.pages[novent.index].play();
 			}
 			if(novent.index != novent.pages.length && novent.waiting) {
@@ -99,13 +99,14 @@
 
 			window.onresize = function() {
 				resize(novent.canvas);
-			}
+			};
+
 			resize(novent.canvas);
 		}
 
 		initialize();
 		return novent;
-	}
+	};
 
 	function resize(canvasElement) {
 		canvasElement.style.position = "fixed";

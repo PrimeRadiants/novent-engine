@@ -629,24 +629,26 @@ function UnknownNoventExeption(name, message) {
       event.page.novent.waiting = false;
       return event.function(event.page.container, event.page)
         .then(function() {
-          event.page.index++
+          event.page.index++;
           event.page.novent.waiting = true;
-					event.page.novent.trigger("eventend");
           if(event.page.index == event.page.events.length) {
             event.page.novent.index++;
             return event.page.novent.play();
           }
+					else {
+						event.page.novent.trigger("eventend");
+					}
         });
     }
 
 		function eventFunction(container, page) {
 			return new Promise(function(resolve) {
-				funct(resolve, container, page)
+				funct(resolve, container, page);
 			});
 		}
 
     return event;
-  }
+  };
 })();
 
 (function() {
@@ -730,7 +732,7 @@ function UnknownNoventExeption(name, message) {
 		}
 
 		function play() {
-			if(novent.index == 0 && novent.waiting) {
+			if(novent.index === 0 && novent.waiting) {
 				return novent.pages[novent.index].play();
 			}
 			if(novent.index != novent.pages.length && novent.waiting) {
@@ -750,13 +752,14 @@ function UnknownNoventExeption(name, message) {
 
 			window.onresize = function() {
 				resize(novent.canvas);
-			}
+			};
+
 			resize(novent.canvas);
 		}
 
 		initialize();
 		return novent;
-	}
+	};
 
 	function resize(canvasElement) {
 		canvasElement.style.position = "fixed";
@@ -846,7 +849,7 @@ function UnknownNoventExeption(name, message) {
 		function load() {
 			page.loading = true;
 
-			if(materials && Object.keys(materials).length != 0) {
+			if(materials && Object.keys(materials).length !== 0) {
 				for(var key in materials) {
 					page.loadQueue.loadFile({id:key, src: materials[key]});
 				}
@@ -870,7 +873,7 @@ function UnknownNoventExeption(name, message) {
 		}
 
 		function play() {
-			if(page.index == 0) {
+			if(page.index === 0) {
 				if(page.loadQueue.loaded) {
 					inititalize();
 					return page.events[page.index].play();
@@ -898,7 +901,8 @@ function UnknownNoventExeption(name, message) {
 				 if (obj1.index > obj2.index) { return 1; }
 				 if (obj1.index < obj2.index) { return -1; }
 				 return 0;
-			}
+			};
+
 			page.container.sortChildren(sortFunction);
 			page.novent.stage.addChild(page.container);
 			if(page.novent.index > 0)
@@ -906,7 +910,7 @@ function UnknownNoventExeption(name, message) {
 		}
 
 		return page;
-  }
+  };
 
 	heir.inherit(Page, EventEmitter);
 })();
