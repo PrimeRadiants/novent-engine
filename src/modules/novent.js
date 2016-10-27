@@ -43,6 +43,8 @@
 
 		novent.play = play;
 
+		novent.load = load;
+
 		function validateNoventName(name) {
 			if(!name || name === '')
 				throw new InvalidInputException('name', 'missing parameter name');
@@ -74,19 +76,31 @@
 			return value;
 		}
 
-		function page(index, name, init, materials) {
-			return NoventEngine.page(novent, index, name, init, materials);
+		function page(ordinal, name, init, materials) {
+			return NoventEngine.page(novent, ordinal, name, init, materials);
 		}
 
 		function play() {
 			if(novent.index === 0 && novent.waiting) {
-				return novent.pages[novent.index].play();
+				return novent.page(novent.index).play();
 			}
 			if(novent.index != novent.pages.length && novent.waiting) {
-				return novent.pages[novent.index].play();
+				return novent.page(novent.index).play();
 			}
 			else if(novent.index == novent.pages.length && novent.waiting) {
 				novent.trigger("complete");
+			}
+		}
+
+		function load() {
+			novent.page(novent.index).load();
+		}
+
+		function reset() {
+			novent.stage = new createjs.Stage(novent.canvas);
+			novent.index = 0;
+			for(var i = 0; i < novent.pages.length; i++) {
+				novent.page(i).index = 0;
 			}
 		}
 

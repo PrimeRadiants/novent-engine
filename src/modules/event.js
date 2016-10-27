@@ -3,23 +3,24 @@
 
   NoventEngine.event = event;
 
-  function event(page, index, funct) {
+  function event(page, ordinal, funct) {
     if(!page)
       throw new InvalidInputException('page', 'missing parameter page');
 
-    if(page.events[index]) {
-      return page.events[index];
+    if(page.events[ordinal]) {
+      return page.events[ordinal];
     }
     else {
-      page.events[index] = new Event(page, index, funct);
-      return page.events[index];
+      page.events[ordinal] = new Event(page, ordinal, funct);
+      return page.events[ordinal];
     }
   }
 
-  var Event = function(page, index, funct) {
+  var Event = function(page, ordinal, funct) {
     var event = this;
 
     event.page = page;
+		event.ordinal = ordinal;
     event.function = eventFunction;
 
     event.play = play;

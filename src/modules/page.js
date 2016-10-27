@@ -3,25 +3,25 @@
 
   NoventEngine.page = page;
 
-  function page(novent, index, name, init, materials) {
+  function page(novent, ordinal, name, init, materials) {
     if(!novent)
       throw new InvalidInputException('novent', 'missing parameter novent');
 
-    if(novent.pages[index]) {
-      return novent.pages[index];
+    if(novent.pages[ordinal]) {
+      return novent.pages[ordinal];
     }
     else {
-      novent.pages[index] = new Page(novent, index, name, init, materials);
-      return novent.pages[index];
+      novent.pages[ordinal] = new Page(novent, ordinal, name, init, materials);
+      return novent.pages[ordinal];
     }
   }
 
-  var Page = function(novent, index, name, init, materials) {
+  var Page = function(novent, ordinal, name, init, materials) {
     var page = this;
     if(!novent)
       throw new InvalidInputException('novent', 'missing parameter novent');
 
-    page.index = validateNumericValue('index', index);
+    page.ordinal = validateNumericValue('ordinal', ordinal);
     page.novent = novent;
 		page.name = name;
 
@@ -52,8 +52,8 @@
       return value;
     }
 
-		function event(index, funct) {
-			return NoventEngine.event(page, index, funct);
+		function event(ordinal, funct) {
+			return NoventEngine.event(page, ordinal, funct);
 		}
 
 		function load() {
@@ -82,6 +82,9 @@
 				page.loading = false;
 				page.trigger("loadComplete");
 			}
+
+			if(page.ordinal != page.novent.pages.length - 1)
+				page.on("loadComplete", page.novent.page(page.ordinal + 1).load);
 		}
 
 		function play() {

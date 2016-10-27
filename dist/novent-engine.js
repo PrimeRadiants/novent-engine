@@ -582,28 +582,46 @@ if(typeof createjs == "undefined")
 
 var NoventEngine = NoventEngine || {};
 
+function InvalidInputException(input, message) {
+  this.name = "InvalidInputException";
+  this.input = input;
+  this.message = message;
+}
+
+function MissingLibraryException(message) {
+  this.name = "MissingLibraryException";
+  this.message = message;
+}
+
+function UnknownNoventExeption(name, message) {
+  this.name = "UnknownNoventExeption";
+  this.message = message;
+  this.name = name;
+}
+
 (function() {
 	'use strict';
 
   NoventEngine.event = event;
 
-  function event(page, index, funct) {
+  function event(page, ordinal, funct) {
     if(!page)
       throw new InvalidInputException('page', 'missing parameter page');
 
-    if(page.events[index]) {
-      return page.events[index];
+    if(page.events[ordinal]) {
+      return page.events[ordinal];
     }
     else {
-      page.events[index] = new Event(page, index, funct);
-      return page.events[index];
+      page.events[ordinal] = new Event(page, ordinal, funct);
+      return page.events[ordinal];
     }
   }
 
-  var Event = function(page, index, funct) {
+  var Event = function(page, ordinal, funct) {
     var event = this;
 
     event.page = page;
+		event.ordinal = ordinal;
     event.function = eventFunction;
 
     event.play = play;
@@ -681,6 +699,8 @@ var NoventEngine = NoventEngine || {};
 
 		novent.play = play;
 
+		novent.load = load;
+
 		function validateNoventName(name) {
 			if(!name || name === '')
 				throw new InvalidInputException('name', 'missing parameter name');
@@ -712,19 +732,31 @@ var NoventEngine = NoventEngine || {};
 			return value;
 		}
 
-		function page(index, name, init, materials) {
-			return NoventEngine.page(novent, index, name, init, materials);
+		function page(ordinal, name, init, materials) {
+			return NoventEngine.page(novent, ordinal, name, init, materials);
 		}
 
 		function play() {
 			if(novent.index === 0 && novent.waiting) {
-				return novent.pages[novent.index].play();
+				return novent.page(novent.index).play();
 			}
 			if(novent.index != novent.pages.length && novent.waiting) {
-				return novent.pages[novent.index].play();
+				return novent.page(novent.index).play();
 			}
 			else if(novent.index == novent.pages.length && novent.waiting) {
 				novent.trigger("complete");
+			}
+		}
+
+		function load() {
+			novent.page(novent.index).load();
+		}
+
+		function reset() {
+			novent.stage = new createjs.Stage(novent.canvas);
+			novent.index = 0;
+			for(var i = 0; i < novent.pages.length; i++) {
+				novent.page(i).index = 0;
 			}
 		}
 
@@ -778,25 +810,25 @@ var NoventEngine = NoventEngine || {};
 
   NoventEngine.page = page;
 
-  function page(novent, index, name, init, materials) {
+  function page(novent, ordinal, name, init, materials) {
     if(!novent)
       throw new InvalidInputException('novent', 'missing parameter novent');
 
-    if(novent.pages[index]) {
-      return novent.pages[index];
+    if(novent.pages[ordinal]) {
+      return novent.pages[ordinal];
     }
     else {
-      novent.pages[index] = new Page(novent, index, name, init, materials);
-      return novent.pages[index];
+      novent.pages[ordinal] = new Page(novent, ordinal, name, init, materials);
+      return novent.pages[ordinal];
     }
   }
 
-  var Page = function(novent, index, name, init, materials) {
+  var Page = function(novent, ordinal, name, init, materials) {
     var page = this;
     if(!novent)
       throw new InvalidInputException('novent', 'missing parameter novent');
 
-    page.index = validateNumericValue('index', index);
+    page.ordinal = validateNumericValue('ordinal', ordinal);
     page.novent = novent;
 		page.name = name;
 
@@ -827,8 +859,8 @@ var NoventEngine = NoventEngine || {};
       return value;
     }
 
-		function event(index, funct) {
-			return NoventEngine.event(page, index, funct);
+		function event(ordinal, funct) {
+			return NoventEngine.event(page, ordinal, funct);
 		}
 
 		function load() {
@@ -857,6 +889,9 @@ var NoventEngine = NoventEngine || {};
 				page.loading = false;
 				page.trigger("loadComplete");
 			}
+
+			if(page.ordinal != page.novent.pages.length - 1)
+				page.on("loadComplete", page.novent.page(page.ordinal + 1).load);
 		}
 
 		function play() {
@@ -901,20 +936,3 @@ var NoventEngine = NoventEngine || {};
 
 	heir.inherit(Page, EventEmitter);
 })();
-
-function InvalidInputException(input, message) {
-  this.name = "InvalidInputException";
-  this.input = input;
-  this.message = message;
-}
-
-function MissingLibraryException(message) {
-  this.name = "MissingLibraryException";
-  this.message = message;
-}
-
-function UnknownNoventExeption(name, message) {
-  this.name = "UnknownNoventExeption";
-  this.message = message;
-  this.name = name;
-}
