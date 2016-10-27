@@ -77,6 +77,8 @@
 			}
 			else {
 				page.loadQueue.progress = 1;
+				page.loadQueue.dispatchEvent("progress");
+				page.loadQueue.dispatchEvent("complete");
 				page.loading = false;
 				page.trigger("loadComplete");
 			}

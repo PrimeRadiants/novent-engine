@@ -582,23 +582,6 @@ if(typeof createjs == "undefined")
 
 var NoventEngine = NoventEngine || {};
 
-function InvalidInputException(input, message) {
-  this.name = "InvalidInputException";
-  this.input = input;
-  this.message = message;
-}
-
-function MissingLibraryException(message) {
-  this.name = "MissingLibraryException";
-  this.message = message;
-}
-
-function UnknownNoventExeption(name, message) {
-  this.name = "UnknownNoventExeption";
-  this.message = message;
-  this.name = name;
-}
-
 (function() {
 	'use strict';
 
@@ -634,6 +617,7 @@ function UnknownNoventExeption(name, message) {
           event.page.novent.waiting = true;
           if(event.page.index == event.page.events.length) {
             event.page.novent.index++;
+						event.page.novent.trigger("pageend");
             return event.page.novent.play();
           }
 					else {
@@ -868,6 +852,8 @@ function UnknownNoventExeption(name, message) {
 			}
 			else {
 				page.loadQueue.progress = 1;
+				page.loadQueue.dispatchEvent("progress");
+				page.loadQueue.dispatchEvent("complete");
 				page.loading = false;
 				page.trigger("loadComplete");
 			}
@@ -915,3 +901,20 @@ function UnknownNoventExeption(name, message) {
 
 	heir.inherit(Page, EventEmitter);
 })();
+
+function InvalidInputException(input, message) {
+  this.name = "InvalidInputException";
+  this.input = input;
+  this.message = message;
+}
+
+function MissingLibraryException(message) {
+  this.name = "MissingLibraryException";
+  this.message = message;
+}
+
+function UnknownNoventExeption(name, message) {
+  this.name = "UnknownNoventExeption";
+  this.message = message;
+  this.name = name;
+}

@@ -33,6 +33,7 @@
           event.page.novent.waiting = true;
           if(event.page.index == event.page.events.length) {
             event.page.novent.index++;
+						event.page.novent.trigger("pageend");
             return event.page.novent.play();
           }
 					else {
