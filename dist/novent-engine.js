@@ -928,7 +928,7 @@ function UnknownNoventExeption(name, message) {
 			page.container.sortChildren(sortFunction);
 			page.novent.stage.addChild(page.container);
 			if(page.novent.index > 0)
-				page.novent.stage.removeChild(page.novent.pages[index - 1].container);
+				page.novent.stage.removeChild(page.novent.pages[page.ordinal - 1].container);
 		}
 
 		return page;
