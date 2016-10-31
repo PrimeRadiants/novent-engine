@@ -882,6 +882,14 @@ function UnknownNoventExeption(name, message) {
 					page.trigger("loadComplete");
 				});
 
+				page.loadQueue.on("error", function() {
+					page.novent.trigger("loadError");
+				});
+
+				page.loadQueue.on("fileerror", function() {
+					page.novent.trigger("loadError");
+				});
+
 				page.loadQueue.load();
 			}
 			else {
