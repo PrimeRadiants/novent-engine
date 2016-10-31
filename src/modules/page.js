@@ -36,6 +36,7 @@
 		page.play = play;
 		page.loading = false;
 		page.loadQueue = new createjs.LoadQueue(true);
+		page.loadQueue.installPlugin(createjs.Sound);
 		page.load = load;
 
 		page.lib = {};

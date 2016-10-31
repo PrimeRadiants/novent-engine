@@ -580,6 +580,7 @@
 if(typeof createjs == "undefined")
   throw new MissingLibraryException('missing library createjs');
 
+createjs.Sound.alternateExtensions = ["mp3"];
 var NoventEngine = NoventEngine || {};
 
 function InvalidInputException(input, message) {
@@ -843,6 +844,7 @@ function UnknownNoventExeption(name, message) {
 		page.play = play;
 		page.loading = false;
 		page.loadQueue = new createjs.LoadQueue(true);
+		page.loadQueue.installPlugin(createjs.Sound);
 		page.load = load;
 
 		page.lib = {};
