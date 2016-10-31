@@ -756,6 +756,7 @@ function UnknownNoventExeption(name, message) {
 		function reset() {
 			novent.stage = new createjs.Stage(novent.canvas);
 			novent.index = 0;
+			createjs.Sound.stop();
 			for(var i = 0; i < novent.pages.length; i++) {
 				novent.page(i).index = 0;
 			}
