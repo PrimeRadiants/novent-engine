@@ -45,6 +45,8 @@
 
 		novent.load = load;
 
+		novent.reset = reset;
+
 		function validateNoventName(name) {
 			if(!name || name === '')
 				throw new InvalidInputException('name', 'missing parameter name');

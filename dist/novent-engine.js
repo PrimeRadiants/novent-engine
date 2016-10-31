@@ -583,23 +583,6 @@ if(typeof createjs == "undefined")
 createjs.Sound.alternateExtensions = ["mp3"];
 var NoventEngine = NoventEngine || {};
 
-function InvalidInputException(input, message) {
-  this.name = "InvalidInputException";
-  this.input = input;
-  this.message = message;
-}
-
-function MissingLibraryException(message) {
-  this.name = "MissingLibraryException";
-  this.message = message;
-}
-
-function UnknownNoventExeption(name, message) {
-  this.name = "UnknownNoventExeption";
-  this.message = message;
-  this.name = name;
-}
-
 (function() {
 	'use strict';
 
@@ -701,6 +684,8 @@ function UnknownNoventExeption(name, message) {
 		novent.play = play;
 
 		novent.load = load;
+
+		novent.reset = reset;
 
 		function validateNoventName(name) {
 			if(!name || name === '')
@@ -947,3 +932,20 @@ function UnknownNoventExeption(name, message) {
 
 	heir.inherit(Page, EventEmitter);
 })();
+
+function InvalidInputException(input, message) {
+  this.name = "InvalidInputException";
+  this.input = input;
+  this.message = message;
+}
+
+function MissingLibraryException(message) {
+  this.name = "MissingLibraryException";
+  this.message = message;
+}
+
+function UnknownNoventExeption(name, message) {
+  this.name = "UnknownNoventExeption";
+  this.message = message;
+  this.name = name;
+}
